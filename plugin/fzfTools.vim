@@ -62,6 +62,7 @@ function s:Ls(...)
 endfunction
 
 function s:InitTermWin()
+  execute "normal :\<BS>"
   execute "normal \<C-w>J"
   call term_setsize('', float2nr(floor(&lines*0.25)), 0)
   let s:lastStatus = &laststatus
