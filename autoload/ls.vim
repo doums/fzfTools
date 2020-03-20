@@ -31,6 +31,10 @@ function ls#Tapi_Ls(bufNumber, json)
 endfunction
 
 function ls#OnLsEnds(job, exitStatus)
+  if a:exitStatus != 0 && a:exitStatus != 130
+    call s:ResetVariables()
+    return
+  endif
   execute "q"
   call win_gotoid(s:prevWinId)
   if a:exitStatus == 0
@@ -38,6 +42,10 @@ function ls#OnLsEnds(job, exitStatus)
       execute command
     endfor
   endif
+  call s:ResetVariables()
+endfunction
+
+function s:ResetVariables()
   let s:termBuf = 0
   let s:prevWinId = 0
   let s:fileCommands = []
@@ -56,8 +64,7 @@ function ls#Ls(...)
         \ "term_api": "ls#Tapi_Ls",
         \ "term_rows": float2nr(floor(&lines*0.25)),
         \ "exit_cb": "ls#OnLsEnds",
-        \ "term_kill": "SIGKILL",
-        \ "term_finish": "close"
+        \ "term_kill": "SIGKILL"
         \ })
   call setbufvar(s:termBuf, "&filetype", "fzfLs")
 endfunction

@@ -22,10 +22,14 @@ function buf#Tapi_Buf(bufNumber, json)
 endfunction
 
 function buf#OnBufEnds(job, exitStatus)
+  if a:exitStatus != 0 && a:exitStatus != 130
+    call s:ResetVariables()
+    return
+  endif
   execute "q"
   let selected = s:response.selected
   let mode = s:response.mode
-  if a:exitStatus != 0 || empty(selected)
+  if empty(selected)
     call win_gotoid(s:prevWinId)
   else
     for buffer in s:buffers
@@ -49,6 +53,10 @@ function buf#OnBufEnds(job, exitStatus)
       endif
     endfor
   endif
+  call s:ResetVariables()
+endfunction
+
+function s:ResetVariables()
   let s:bufScript = 0
   let s:termBuf = 0
   let s:prevWinId = 0
@@ -106,8 +114,7 @@ function buf#Buf()
         \ "term_api": "buf#Tapi_Buf",
         \ "term_rows": float2nr(floor(&lines*0.25)),
         \ "exit_cb": "buf#OnBufEnds",
-        \ "term_kill": "SIGKILL",
-        \ "term_finish": "close"
+        \ "term_kill": "SIGKILL"
         \ })
   call setbufvar(s:termBuf, "&filetype", "fzfBuf")
 endfunction
