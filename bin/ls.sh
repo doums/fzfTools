@@ -62,4 +62,4 @@ for index in "${!array[@]}"; do
 done
 
 json_body="{\"mode\": \"$mode\", \"selection\": [$selection]}"
-printf '%b["call", "Tapi_Ls", %s]%b' "\e]51;" "$json_body" "\07"
+printf '%b["call", "ls#Tapi_Ls", %s]%b' "\e]51;" "$json_body" "\07"

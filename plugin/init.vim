@@ -5,10 +5,10 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-if exists("g:fzfCommon")
+if exists("g:fzfInit")
   finish
 endif
-let g:fzfCommon = 1
+let g:fzfInit = 1
 
 function s:InitTermWin()
   execute "normal :\<BS>"
@@ -39,6 +39,14 @@ augroup fzfTools
   autocmd TerminalWinOpen,BufEnter Ls,Buf call <SID>InitTermWin()
   autocmd BufLeave,BufDelete Ls,Buf call <SID>RestoreWinOpt()
 augroup END
+
+command -nargs=? -complete=dir Ls call fzfTools#Ls(<f-args>)
+noremap <silent> <unique> <script> <Plug>Ls <SID>LsMap
+noremap <SID>LsMap :Ls<CR>
+
+command Buf call fzfTools#Buf()
+noremap <silent> <unique> <script> <Plug>Buf <SID>BufMap
+noremap <SID>BufMap :Buf<CR>
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

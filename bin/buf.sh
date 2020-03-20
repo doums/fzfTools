@@ -42,4 +42,4 @@ case "${array[0]}" in
 esac
 
 json_body="{\"mode\": \"$mode\", \"selected\": \"${array[1]}\"}"
-printf '%b["call", "Tapi_Buf", %s]%b' "\e]51;" "$json_body" "\07"
+printf '%b["call", "buf#Tapi_Buf", %s]%b' "\e]51;" "$json_body" "\07"

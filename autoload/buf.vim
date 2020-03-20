@@ -16,12 +16,12 @@ let s:buffers = []
 let s:responde = 0
 let s:bufScript = findfile("bin/buf.sh", &runtimepath)
 
-function Tapi_Buf(bufNumber, json)
+function buf#Tapi_Buf(bufNumber, json)
   let s:response = {'mode': a:json.mode,
         \ 'selected': a:json.selected}
 endfunction
 
-function OnBufEnds(job, exitStatus)
+function buf#OnBufEnds(job, exitStatus)
   execute "q"
   let selected = s:response.selected
   let mode = s:response.mode
@@ -93,7 +93,7 @@ function s:SerializeBufs()
   return buffers
 endfunction
 
-function s:Buf()
+function buf#Buf()
   let s:prevWinId = win_getid()
   let bufsInfo = s:GetBufsInfo()
   let s:buffers = bufsInfo.buffers
@@ -101,18 +101,14 @@ function s:Buf()
   let command = s:bufScript..' "'..bufsInfo.currentBuf..'" "'..serializedBufs..'"'
   let s:termBuf = term_start(command, {
         \ "term_name": "Buf",
-        \ "term_api": "Tapi_Buf",
+        \ "term_api": "buf#Tapi_Buf",
         \ "term_rows": float2nr(floor(&lines*0.25)),
-        \ "exit_cb": "OnBufEnds",
+        \ "exit_cb": "buf#OnBufEnds",
         \ "term_kill": "SIGKILL",
         \ "term_finish": "close"
         \ })
   call setbufvar(s:termBuf, "&filetype", "fzfBuf")
 endfunction
-
-command Buf call <SID>Buf()
-noremap <silent> <unique> <script> <Plug>Buf <SID>BufMap
-noremap <SID>BufMap :Buf<CR>
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
