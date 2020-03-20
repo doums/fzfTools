@@ -39,7 +39,7 @@ function OnBufEnds(job, exitStatus)
           elseif mode == "hSplit"
             execute "sbuffer ".selected
           elseif mode == "vSplit"
-            execute "verticale sbuffer ".selected
+            execute "vertical sbuffer ".selected
           elseif mode == "tab"
             execute "tabnew"
             execute "buffer ".selected

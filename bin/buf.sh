@@ -24,9 +24,6 @@ if [ "$#" -ne 2 ]; then
   exit 1
 fi
 
-echo "$1"
-echo "$2"
-
 fzf_output=$(echo -e "${2//$HOME/\~}" \
 | fzf \
 --prompt="buf " \
