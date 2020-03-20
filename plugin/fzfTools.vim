@@ -10,57 +10,6 @@ if exists("g:fzfTools")
 endif
 let g:fzfTools = 1
 
-let s:termBuf = 0
-let s:prevWinId = 0
-let s:fileCommands = []
-let s:lsScript = findfile("bin/ls.sh", &runtimepath)
-
-function Tapi_Ls(bufNumber, json)
-  let mode=a:json.mode
-  for file in a:json.selection
-    if mode == "default"
-      call add(s:fileCommands, "edit ".file)
-    elseif mode == "hSplit"
-      call add(s:fileCommands, "split ".file)
-    elseif mode == "vSplit"
-      call add(s:fileCommands, "vsplit ".file)
-    elseif mode == "tab"
-      call add(s:fileCommands, "tabedit ".file)
-    endif
-  endfor
-endfunction
-
-function OnLsEnds(job, exitStatus)
-  execute "q"
-  if a:exitStatus != 0
-    call win_gotoid(s:prevWinId)
-  else
-    for command in s:fileCommands
-      execute command
-    endfor
-  endif
-  let s:termBuf = 0
-  let s:prevWinId = 0
-  let s:fileCommands = []
-endfunction
-
-function s:Ls(...)
-  let s:prevWinId = win_getid()
-  let command = s:lsScript
-  if a:0 == 1
-    let command = s:lsScript." ".expand(a:1)
-  endif
-  let s:termBuf = term_start(command, {
-        \ "term_name": "Ls",
-        \ "term_api": "Tapi_Ls",
-        \ "term_rows": float2nr(floor(&lines*0.25)),
-        \ "exit_cb": "OnLsEnds",
-        \ "term_kill": "SIGKILL",
-        \ "term_finish": "close"
-        \ })
-  call setbufvar(s:termBuf, "&filetype", "fzfLs")
-endfunction
-
 function s:InitTermWin()
   execute "normal :\<BS>"
   execute "normal \<C-w>J"
