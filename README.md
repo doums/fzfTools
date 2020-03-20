@@ -2,7 +2,7 @@
 
 :hammer: A [vim](https://www.vim.org/) plugin that provides a lightweight collection of tools that uses [fzf](https://github.com/junegunn/fzf).
 
-### What's the difference with [fzf.vim](https://github.com/junegunn/fzf.vim)?
+### what's the difference with [fzf.vim](https://github.com/junegunn/fzf.vim)?
 As @junegunn (the original author of fzf and fzf.vim) said:
 > fzf in itself is not a Vim plugin, and the official repository only provides the basic wrapper function for Vim and it's up to the users to write their own Vim commands with it.
 
@@ -39,7 +39,7 @@ For both of the following tools you can open the selected item(s) in several way
 `ctrl-v` vertical split\
 `ctrl-t` in a new tab
 
-- **Ls**
+- **Ls**\
 List the files in the current directory or in the given directory and open the one(s) you need.\
 usage:
 #### `Ls` command:
@@ -51,7 +51,7 @@ usage:
 nmap <C-s> <Plug>Ls
 ```
 
-- **Buf**
+- **Buf**\
 List the loaded and listed buffers and goto/open the one you need.\
 usage:
 #### `Buf` command:
@@ -63,7 +63,7 @@ usage:
 nmap <C-b> <Plug>Buf
 ```
 
-### Credits
+### credits
 junegunn for fzf and fzf.vim
 
 ### license
