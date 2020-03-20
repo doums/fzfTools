@@ -15,7 +15,7 @@ But personally, I only use vim on my Arch Linux and using a plugin like this jus
 So I decided to follow the initial advise above and write my own plugin in a more [kiss'ish](https://en.wikipedia.org/wiki/KISS_principle) way.
 
 ### prerequisites
-- [fzf.vim](https://github.com/junegunn/fzf.vim)
+- [fzf](https://github.com/junegunn/fzf)
 - [bat](https://github.com/sharkdp/bat)
 
 ### install
