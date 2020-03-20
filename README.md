@@ -14,6 +14,10 @@ So the code is pretty huge (it's normal).
 But personally, I only use vim on my Arch Linux and using a plugin like this just seemed overkill for my needs.\
 So I decided to follow the initial advise above and write my own plugin in a more [kiss'ish](https://en.wikipedia.org/wiki/KISS_principle) way.
 
+### prerequisites
+- [fzf.vim](https://github.com/junegunn/fzf.vim)
+- [bat](https://github.com/sharkdp/bat)
+
 ### install
 
 If you use a plugin manager, follow the traditional way.

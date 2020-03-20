@@ -16,12 +16,6 @@ if ! fzf --version &> /dev/null; then
   exit 1
 fi
 
-if ! bat --version &> /dev/null; then
-  >&2 printf "%bThis script needs %bbat%b%b to work.%b\n" \
-  "$red" "$bold" "$reset" "$red" "$reset"
-  exit 1
-fi
-
 if [ "$#" -ne 2 ]; then
   >&2 printf "%bThis script expects two arguments to work.%b\n" \
   "$red" "$reset"
