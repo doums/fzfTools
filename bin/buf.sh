@@ -27,9 +27,22 @@ fi
 echo "$1"
 echo "$2"
 
-buffer=$(echo -e "${2//$HOME/\~}" \
-| fzf --prompt="buf " --header="${1//$HOME/\~}" \
+fzf_output=$(echo -e "${2//$HOME/\~}" \
+| fzf \
+--prompt="buf " \
+--header="${1//$HOME/\~}" \
+--no-info \
+--expect=ctrl-s,ctrl-v,ctrl-t \
 | awk '{print $1}')
 
-json_body="{\"selected\": \"$buffer\"}"
+mapfile -t array <<< "$fzf_output"
+
+case "${array[0]}" in
+  ctrl-s) mode="hSplit" ;;
+  ctrl-v) mode="vSplit" ;;
+  ctrl-t) mode="tab" ;;
+  *) mode="default" ;;
+esac
+
+json_body="{\"mode\": \"$mode\", \"selected\": \"${array[1]}\"}"
 printf '%b["call", "Tapi_Buf", %s]%b' "\e]51;" "$json_body" "\07"

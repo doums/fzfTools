@@ -10,31 +10,49 @@ if exists("g:fzfBuf")
 endif
 let g:fzfBuf = 1
 
+let s:termBuf = 0
+let s:prevWinId = 0
+let s:buffers = []
+let s:responde = 0
+let s:bufScript = findfile("bin/buf.sh", &runtimepath)
+
 function Tapi_Buf(bufNumber, json)
-  echom "Tapi_Buf called!"
-  let s:selectedBuffer=a:json.selected
-  echom buffer
+  let s:response = {'mode': a:json.mode,
+        \ 'selected': a:json.selected}
 endfunction
 
 function OnBufEnds(job, exitStatus)
-  " execute "q"
-  if a:exitStatus != 0
+  execute "q"
+  let selected = s:response.selected
+  let mode = s:response.mode
+  if a:exitStatus != 0 || empty(selected)
     call win_gotoid(s:prevWinId)
   else
-    for buffer in s:buffer
-      if buffer.number == s:selectedBuffer
-        if buffer.displayed
+    for buffer in s:buffers
+      if buffer.number == selected
+        if buffer.displayed && mode == "default"
           call win_gotoid(buffer.windowsId[0])
         else
           call win_gotoid(s:prevWinId)
-          execute "buffer "
+          if mode == "default"
+            execute "buffer ".selected
+          elseif mode == "hSplit"
+            execute "sbuffer ".selected
+          elseif mode == "vSplit"
+            execute "verticale sbuffer ".selected
+          elseif mode == "tab"
+            execute "tabnew"
+            execute "buffer ".selected
+          endif
         endif
+        break
       endif
     endfor
   endif
   let s:termBuf = 0
   let s:prevWinId = 0
   let s:buffers = []
+  let s:response = 0
 endfunction
 
 function s:GetBufsInfo()
@@ -68,12 +86,10 @@ function s:SerializeBufs()
     let buffer = s:buffers[index]
     let buffers = buffers..buffer.number.." "..buffer.name
     if index < len(s:buffers) - 1
-      echom "added a \\n"
       let buffers = buffers.."\n"
     endif
     let index += 1
   endwhile
-  echom buffers
   return buffers
 endfunction
 
@@ -81,7 +97,6 @@ function s:Buf()
   let s:prevWinId = win_getid()
   let bufsInfo = s:GetBufsInfo()
   let s:buffers = bufsInfo.buffers
-  echom bufsInfo
   let serializedBufs = s:SerializeBufs()
   let command = s:bufScript..' "'..bufsInfo.currentBuf..'" "'..serializedBufs..'"'
   let s:termBuf = term_start(command, {
@@ -90,8 +105,8 @@ function s:Buf()
         \ "term_rows": float2nr(floor(&lines*0.25)),
         \ "exit_cb": "OnBufEnds",
         \ "term_kill": "SIGKILL",
+        \ "term_finish": "close"
         \ })
-        " \ "term_finish": "close"
   call setbufvar(s:termBuf, "&filetype", "fzfBuf")
 endfunction
 
