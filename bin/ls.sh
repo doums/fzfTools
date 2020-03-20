@@ -19,6 +19,11 @@ if ! bat --version &> /dev/null; then
 fi
 
 if [ "$1" ]; then
+  if [ "${1: -1:1}" = "/" ]; then
+    directory="$1"
+  else
+    directory="$1/"
+  fi
   cd "$1"
 fi
 
@@ -46,7 +51,11 @@ esac
 unset 'array[0]'
 
 for index in "${!array[@]}"; do
-  selection+="\"$(pwd)/${array[index]}\""
+  selection+="\""
+  if [ "$directory" ]; then
+    selection+=$directory
+  fi
+  selection+="${array[index]}\""
   if [ "$index" -lt "${#array[@]}" ]; then
     selection+=", "
   fi
