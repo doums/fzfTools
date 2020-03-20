@@ -43,26 +43,26 @@ For both of the following tools you can open the selected item(s) in several way
 `ctrl-v` vertical split\
 `ctrl-t` in a new tab
 
-- **Ls**\
+#### Ls
 List the files in the current directory or in the given directory and open the one(s) you need.\
 usage:
-#### `Ls` command:
+- **`Ls` command**
 ```
 :Ls [directory]
 ```
-#### `<Plug>Ls` mapping:
+- **`<Plug>Ls` mapping**
 ```
 nmap <C-s> <Plug>Ls
 ```
 
-- **Buf**\
+#### Buf
 List the loaded and listed buffers and goto/open the one you need.\
 usage:
-#### `Buf` command:
+- **`Buf` command**
 ```
 :Buf
 ```
-#### `<Plug>Buf` mapping:
+- **`<Plug>Buf` mapping**
 ```
 nmap <C-b> <Plug>Buf
 ```
