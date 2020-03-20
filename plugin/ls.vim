@@ -32,9 +32,8 @@ endfunction
 
 function OnLsEnds(job, exitStatus)
   execute "q"
-  if a:exitStatus != 0
-    call win_gotoid(s:prevWinId)
-  else
+  call win_gotoid(s:prevWinId)
+  if a:exitStatus == 0
     for command in s:fileCommands
       execute command
     endfor
