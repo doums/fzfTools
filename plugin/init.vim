@@ -11,7 +11,6 @@ endif
 let g:fzfInit = 1
 
 function s:InitTermWin()
-  tnoremap <buffer><nowait> <Esc> <C-c>
   execute "normal :\<BS>"
   execute "normal \<C-w>J"
   call term_setsize('', float2nr(floor(&lines*0.25)), 0)
