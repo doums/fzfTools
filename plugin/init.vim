@@ -24,6 +24,7 @@ function s:InitTermWin()
   set noruler
   set noshowcmd
   set cmdheight=1
+  set nonumber
 endfunction
 
 function s:RestoreWinOpt()
