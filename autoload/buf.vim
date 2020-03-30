@@ -13,7 +13,7 @@ let g:fzfBuf = 1
 let s:termBuf = 0
 let s:prevWinId = 0
 let s:buffers = []
-let s:responde = 0
+let s:response = 0
 let s:bufScript = 0
 
 function buf#Tapi_Buf(bufNumber, json)
