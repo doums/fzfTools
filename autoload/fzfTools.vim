@@ -22,5 +22,10 @@ function fzfTools#Buf()
   call buf#Buf()
 endfunction
 
+function fzfTools#SetScripts()
+  call ls#SetScript()
+  call buf#SetScript()
+endfunction
+
 let &cpo = s:save_cpo
 unlet s:save_cpo

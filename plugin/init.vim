@@ -39,6 +39,7 @@ augroup fzfTools
   autocmd!
   autocmd TerminalWinOpen,BufEnter Ls,Buf call <SID>InitTermWin()
   autocmd BufLeave,BufDelete Ls,Buf call <SID>RestoreWinOpt()
+  autocmd VimEnter,DirChanged * call fzfTools#SetScripts()
 augroup END
 
 command -nargs=? -complete=dir Ls call fzfTools#Ls(<f-args>)

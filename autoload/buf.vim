@@ -14,7 +14,11 @@ let s:termBuf = 0
 let s:prevWinId = 0
 let s:buffers = []
 let s:response = 0
-let s:bufScript = 0
+let s:script = findfile("bin/buf.sh", &runtimepath)
+
+function buf#SetScript()
+  let s:script = findfile("bin/buf.sh", &runtimepath)
+endfunction
 
 function buf#Tapi_Buf(bufNumber, json)
   let s:response = {'mode': a:json.mode,
@@ -57,7 +61,6 @@ function buf#OnBufEnds(job, exitStatus)
 endfunction
 
 function s:ResetVariables()
-  let s:bufScript = 0
   let s:termBuf = 0
   let s:prevWinId = 0
   let s:buffers = []
@@ -103,12 +106,11 @@ function s:SerializeBufs()
 endfunction
 
 function buf#Buf()
-  let s:bufScript = findfile("bin/buf.sh", &runtimepath)
   let s:prevWinId = win_getid()
   let bufsInfo = s:GetBufsInfo()
   let s:buffers = bufsInfo.buffers
   let serializedBufs = s:SerializeBufs()
-  let command = s:bufScript..' "'..bufsInfo.currentBuf..'" "'..serializedBufs..'"'
+  let command = s:script..' "'..bufsInfo.currentBuf..'" "'..serializedBufs..'"'
   let s:termBuf = term_start(command, {
         \ "term_name": "Buf",
         \ "term_api": "buf#Tapi_Buf",

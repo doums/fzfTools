@@ -13,7 +13,11 @@ let g:fzfLs = 1
 let s:termBuf = 0
 let s:prevWinId = 0
 let s:fileCommands = []
-let s:lsScript = 0
+let s:script = findfile("bin/ls.sh", &runtimepath)
+
+function ls#SetScript()
+  let s:script = findfile("bin/ls.sh", &runtimepath)
+endfunction
 
 function ls#Tapi_Ls(bufNumber, json)
   let mode=a:json.mode
@@ -49,15 +53,13 @@ function s:ResetVariables()
   let s:termBuf = 0
   let s:prevWinId = 0
   let s:fileCommands = []
-  let s:lsScript = 0
 endfunction
 
 function ls#Ls(...)
-  let s:lsScript = findfile("bin/ls.sh", &runtimepath)
   let s:prevWinId = win_getid()
-  let command = s:lsScript
+  let command = s:script
   if a:0 == 1
-    let command = s:lsScript." ".expand(a:1)
+    let command = s:script." ".expand(a:1)
   endif
   let s:termBuf = term_start(command, {
         \ "term_name": "Ls",
