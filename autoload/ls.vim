@@ -44,16 +44,16 @@ function ls#OnLsEnds(job, exitStatus)
     call s:ResetVariables()
     return
   endif
-  call win_gotoid(s:prevWinId)
   if a:exitStatus == 130
     let s:apiCalled = 1
   endif
+  call win_gotoid(s:prevWinId)
   call s:ExecuteCommands()
 endfunction
 
 function s:ExecuteCommands()
   if !s:jobRunning && s:apiCalled
-    execute "bd ".s:termBuf
+    execute "bd! ".s:termBuf
     for command in s:fileCommands
       execute command
     endfor

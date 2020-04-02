@@ -15,49 +15,59 @@ let s:prevWinId = 0
 let s:buffers = []
 let s:response = 0
 let s:script = findfile("bin/buf.sh", &runtimepath)
+let s:jobRunning = 0
+let s:apiCalled = 0
 
 function buf#SetScript()
   let s:script = findfile("bin/buf.sh", &runtimepath)
 endfunction
 
 function buf#Tapi_Buf(bufNumber, json)
+  let s:apiCalled = 1
   let s:response = {'mode': a:json.mode,
         \ 'selected': a:json.selected}
+  call s:ExecuteCommands()
 endfunction
 
 function buf#OnBufEnds(job, exitStatus)
+  let s:jobRunning = 0
   if a:exitStatus != 0 && a:exitStatus != 130
     call s:ResetVariables()
     return
   endif
-  execute "q"
-  let selected = s:response.selected
-  let mode = s:response.mode
-  if empty(selected)
-    call win_gotoid(s:prevWinId)
-  else
-    for buffer in s:buffers
-      if buffer.number == selected
-        if buffer.displayed && mode == "default"
-          call win_gotoid(buffer.windowsId[0])
-        else
-          call win_gotoid(s:prevWinId)
-          if mode == "default"
-            execute "buffer ".selected
-          elseif mode == "hSplit"
-            execute "sbuffer ".selected
-          elseif mode == "vSplit"
-            execute "vertical sbuffer ".selected
-          elseif mode == "tab"
-            execute "tabnew"
-            execute "buffer ".selected
+  call win_gotoid(s:prevWinId)
+  call s:ExecuteCommands()
+endfunction
+
+function s:ExecuteCommands()
+  if !s:jobRunning && s:apiCalled
+    execute "bd! ".s:termBuf
+    let selected = s:response.selected
+    let mode = s:response.mode
+    if !empty(selected)
+      for buffer in s:buffers
+        if buffer.number == selected
+          if buffer.displayed && mode == "default"
+            call win_gotoid(buffer.windowsId[0])
+          else
+            call win_gotoid(s:prevWinId)
+            if mode == "default"
+              execute "buffer ".selected
+            elseif mode == "hSplit"
+              execute "sbuffer ".selected
+            elseif mode == "vSplit"
+              execute "vertical sbuffer ".selected
+            elseif mode == "tab"
+              execute "tabnew"
+              execute "buffer ".selected
+            endif
           endif
+          break
         endif
-        break
-      endif
-    endfor
+      endfor
+    endif
+    call s:ResetVariables()
   endif
-  call s:ResetVariables()
 endfunction
 
 function s:ResetVariables()
@@ -65,6 +75,8 @@ function s:ResetVariables()
   let s:prevWinId = 0
   let s:buffers = []
   let s:response = 0
+  let s:jobRunning = 0
+  let s:apiCalled = 0
 endfunction
 
 function s:GetBufsInfo()
@@ -106,6 +118,10 @@ function s:SerializeBufs()
 endfunction
 
 function buf#Buf()
+  if s:jobRunning
+    return
+  endif
+  let s:jobRunning = 1
   let s:prevWinId = win_getid()
   let bufsInfo = s:GetBufsInfo()
   let s:buffers = bufsInfo.buffers
