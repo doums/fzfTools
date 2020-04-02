@@ -21,8 +21,13 @@ function ls#SetScript()
   let s:script = findfile("bin/ls.sh", &runtimepath)
 endfunction
 
-function ls#Tapi_Ls(bufNumber, json)
+function Tapi_fzfToolsLs(bufNumber, json)
   let s:apiCalled = 1
+  if exists("a:json.error")
+    call s:PrintErr(a:json.error)
+    call s:ResetVariables()
+    return
+  endif
   let mode=a:json.mode
   for file in a:json.selection
     if mode == "default"
@@ -38,22 +43,18 @@ function ls#Tapi_Ls(bufNumber, json)
   call s:ExecuteCommands()
 endfunction
 
-function ls#OnLsEnds(job, exitStatus)
+function FzfToolsLsOnExit(job, exitStatus)
   let s:jobRunning = 0
-  if a:exitStatus != 0 && a:exitStatus != 130
+  call win_gotoid(s:prevWinId)
+  if a:exitStatus != 0
     call s:ResetVariables()
     return
   endif
-  if a:exitStatus == 130
-    let s:apiCalled = 1
-  endif
-  call win_gotoid(s:prevWinId)
   call s:ExecuteCommands()
 endfunction
 
 function s:ExecuteCommands()
   if !s:jobRunning && s:apiCalled
-    execute "bd! ".s:termBuf
     for command in s:fileCommands
       execute command
     endfor
@@ -79,7 +80,7 @@ function ls#Ls(...)
   if a:0 == 1
     let directory = expand(a:1)
     if !isdirectory(directory)
-      echohl ErrorMsg | echo a:1." is not a directory" | echohl None
+      call s:PrintErr(a:1." is not a directory")
       call s:ResetVariables()
       return
     endif
@@ -87,12 +88,19 @@ function ls#Ls(...)
   endif
   let s:termBuf = term_start(command, {
         \ "term_name": "Ls",
-        \ "term_api": "ls#Tapi_Ls",
+        \ "term_api": "Tapi_fzfToolsLs",
         \ "term_rows": float2nr(floor(&lines*0.25)),
-        \ "exit_cb": "ls#OnLsEnds",
+        \ "exit_cb": "FzfToolsLsOnExit",
+        \ "term_finish": "close",
         \ "term_kill": "SIGKILL"
         \ })
   call setbufvar(s:termBuf, "&filetype", "fzfLs")
+endfunction
+
+function s:PrintErr(msg)
+  echohl ErrorMsg
+  echom a:msg
+  echohl None
 endfunction
 
 let &cpo = s:save_cpo

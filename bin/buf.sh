@@ -4,21 +4,29 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-set -e
+set -eE
 
-red="\e[38;5;1m"
-bold="\e[1m"
-reset="\e[0m"
+send_to_vim () {
+  printf '%b["call", "Tapi_fzfToolsBuf", %s]%b' "\e]51;" "$1" "\07"
+}
+
+on_trap () {
+  if [ "$?" -eq 130 ] && [[ "$BASH_COMMAND" =~ "fzf_output" ]]; then
+    send_to_vim "{\"mode\": \"\", \"selected\": \"\"}"
+    exit 0
+  fi
+  send_to_vim "{\"error\": \"an error occurred in $0, line $1\"}"
+}
+
+trap 'on_trap "$LINENO"' ERR
 
 if ! fzf --version &> /dev/null; then
-  >&2 printf "%bThis script needs %bfzf%b%b to work.%b\n" \
-  "$red" "$bold" "$reset" "$red" "$reset"
+  send_to_vim "{\"error\": \"fzf not found\"}"
   exit 1
 fi
 
 if [ "$#" -ne 2 ]; then
-  >&2 printf "%bThis script expects two arguments to work.%b\n" \
-  "$red" "$reset"
+  send_to_vim "{\"error\": \"two arguments expected\"}"
   exit 1
 fi
 
@@ -39,5 +47,4 @@ case "${array[0]}" in
   *) mode="default" ;;
 esac
 
-json_body="{\"mode\": \"$mode\", \"selected\": \"${array[1]}\"}"
-printf '%b["call", "buf#Tapi_Buf", %s]%b' "\e]51;" "$json_body" "\07"
+send_to_vim "{\"mode\": \"$mode\", \"selected\": \"${array[1]}\"}"

@@ -22,26 +22,30 @@ function buf#SetScript()
   let s:script = findfile("bin/buf.sh", &runtimepath)
 endfunction
 
-function buf#Tapi_Buf(bufNumber, json)
+function Tapi_fzfToolsBuf(bufNumber, json)
   let s:apiCalled = 1
+  if exists("a:json.error")
+    call s:PrintErr(a:json.error)
+    call s:ResetVariables()
+    return
+  endif
   let s:response = {'mode': a:json.mode,
         \ 'selected': a:json.selected}
   call s:ExecuteCommands()
 endfunction
 
-function buf#OnBufEnds(job, exitStatus)
+function FzfToolsBufOnExit(job, exitStatus)
   let s:jobRunning = 0
-  if a:exitStatus != 0 && a:exitStatus != 130
+  call win_gotoid(s:prevWinId)
+  if a:exitStatus != 0
     call s:ResetVariables()
     return
   endif
-  call win_gotoid(s:prevWinId)
   call s:ExecuteCommands()
 endfunction
 
 function s:ExecuteCommands()
   if !s:jobRunning && s:apiCalled
-    execute "bd! ".s:termBuf
     let selected = s:response.selected
     let mode = s:response.mode
     if !empty(selected)
@@ -129,12 +133,19 @@ function buf#Buf()
   let command = s:script..' "'..bufsInfo.currentBuf..'" "'..serializedBufs..'"'
   let s:termBuf = term_start(command, {
         \ "term_name": "Buf",
-        \ "term_api": "buf#Tapi_Buf",
+        \ "term_api": "Tapi_fzfToolsBuf",
         \ "term_rows": float2nr(floor(&lines*0.25)),
-        \ "exit_cb": "buf#OnBufEnds",
+        \ "exit_cb": "FzfToolsBufOnExit",
+        \ "term_finish": "close",
         \ "term_kill": "SIGKILL"
         \ })
   call setbufvar(s:termBuf, "&filetype", "fzfBuf")
+endfunction
+
+function s:PrintErr(msg)
+  echohl ErrorMsg
+  echom a:msg
+  echohl None
 endfunction
 
 let &cpo = s:save_cpo
