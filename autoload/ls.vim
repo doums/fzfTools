@@ -10,26 +10,36 @@ if exists("g:fzfLs")
 endif
 let g:fzfLs = 1
 
-let s:termBuf = 0
 let s:prevWinId = 0
 let s:fileCommands = []
 let s:script = findfile("bin/ls.sh", &runtimepath)
 let s:jobRunning = 0
-let s:apiCalled = 0
+let s:bufNr = -1
 
 function ls#SetScript()
   let s:script = findfile("bin/ls.sh", &runtimepath)
 endfunction
 
-function Tapi_fzfToolsLs(bufNumber, json)
-  let s:apiCalled = 1
-  if exists("a:json.error")
-    call s:PrintErr(a:json.error)
+function FzfToolsLsOnExit(jobId, exitStatus, ...)
+  let s:jobRunning = 0
+  quit
+  call win_gotoid(s:prevWinId)
+  if has("nvim")
+    execute s:bufNr.'bdelete!'
+  endif
+  let list = readfile('/tmp/nvim/fzfTools_ls')
+  if a:exitStatus != 0
+    call s:PrintErr(get(list, 0, "empty"))
     call s:ResetVariables()
     return
   endif
-  let mode=a:json.mode
-  for file in a:json.selection
+  if empty(list)
+    call s:ResetVariables()
+    return
+  endif
+  let mode=get(list, 0, "default")
+  call remove(list, 0)
+  for file in list
     if mode == "default"
       call add(s:fileCommands, "edit ".file)
     elseif mode == "hSplit"
@@ -40,34 +50,17 @@ function Tapi_fzfToolsLs(bufNumber, json)
       call add(s:fileCommands, "tabedit ".file)
     endif
   endfor
-  call s:ExecuteCommands()
-endfunction
-
-function FzfToolsLsOnExit(job, exitStatus)
-  let s:jobRunning = 0
-  call win_gotoid(s:prevWinId)
-  if a:exitStatus != 0
-    call s:ResetVariables()
-    return
-  endif
-  call s:ExecuteCommands()
-endfunction
-
-function s:ExecuteCommands()
-  if !s:jobRunning && s:apiCalled
-    for command in s:fileCommands
-      execute command
-    endfor
-    call s:ResetVariables()
-  endif
+  for command in s:fileCommands
+    execute command
+  endfor
+  call s:ResetVariables()
 endfunction
 
 function s:ResetVariables()
-  let s:termBuf = 0
   let s:prevWinId = 0
   let s:fileCommands = []
   let s:jobRunning = 0
-  let s:apiCalled = 0
+  let s:bufNr = -1
 endfunction
 
 function ls#Ls(...)
@@ -75,7 +68,6 @@ function ls#Ls(...)
     return
   endif
   let s:jobRunning = 1
-  let s:prevWinId = win_getid()
   let command = s:script
   if a:0 == 1
     let directory = expand(a:1)
@@ -86,15 +78,32 @@ function ls#Ls(...)
     endif
     let command = s:script." ".directory
   endif
-  let s:termBuf = term_start(command, {
-        \ "term_name": "Ls",
-        \ "term_api": "Tapi_fzfToolsLs",
-        \ "term_rows": float2nr(floor(&lines*0.25)),
-        \ "exit_cb": "FzfToolsLsOnExit",
-        \ "term_finish": "close",
-        \ "term_kill": "SIGKILL"
-        \ })
-  call setbufvar(s:termBuf, "&filetype", "fzfLs")
+  let s:prevWinId = win_getid()
+  let h = float2nr(floor(&lines*0.30))
+  let tabMod = 0
+  if h > 5
+    bo new
+  else
+    tabnew
+    let tabMod = 1
+  endif
+  let s:bufNr = bufnr()
+  call setbufvar(s:bufNr, "&filetype", "fzfTools")
+  if has("nvim")
+    call termopen(command, { "on_exit": "FzfToolsLsOnExit" })
+  else
+    call term_start(command, {
+          \ "curwin": 1,
+          \ "term_name": "fzfTools",
+          \ "exit_cb": "FzfToolsLsOnExit",
+          \ "term_finish": "close",
+          \ "term_kill": "SIGKILL"
+          \ })
+  endif
+  if !tabMod
+    execute "resize ".h
+  endif
+  startinsert
 endfunction
 
 function s:PrintErr(msg)

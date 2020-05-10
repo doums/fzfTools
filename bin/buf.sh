@@ -6,27 +6,34 @@
 
 set -eE
 
-send_to_vim () {
-  printf '%b["call", "Tapi_fzfToolsBuf", %s]%b' "\e]51;" "$1" "\07"
-}
+dir=/tmp/nvim
+dest=$dir/fzfTools_buf
+
+if [ -e $dest ]; then
+  rm $dest
+  touch $dest
+elif [ -d $dir ]; then 
+  touch $dest
+else
+  mkdir $dir
+  touch $dest
+fi
 
 on_trap () {
   if [ "$?" -eq 130 ] && [[ "$BASH_COMMAND" =~ "fzf_output" ]]; then
-    send_to_vim "{\"mode\": \"\", \"selected\": \"\"}"
     exit 0
   fi
-  send_to_vim "{\"error\": \"an error occurred in $0, line $1\"}"
 }
 
 trap 'on_trap "$LINENO"' ERR
 
 if ! fzf --version &> /dev/null; then
-  send_to_vim "{\"error\": \"fzf not found\"}"
+  printf "%s\n" "fzf not found" > $dest
   exit 1
 fi
 
 if [ "$#" -ne 2 ]; then
-  send_to_vim "{\"error\": \"two arguments expected\"}"
+  printf "%s\n" "two arguments expected" > $dest
   exit 1
 fi
 
@@ -38,6 +45,10 @@ fzf_output=$(echo -e "${2//$HOME/\~}" \
 --expect=ctrl-s,ctrl-v,ctrl-t \
 | awk '{print $1}')
 
+if [ -z "$fzf_output" ]; then
+  exit 0
+fi
+
 mapfile -t array <<< "$fzf_output"
 
 case "${array[0]}" in
@@ -47,4 +58,5 @@ case "${array[0]}" in
   *) mode="default" ;;
 esac
 
-send_to_vim "{\"mode\": \"$mode\", \"selected\": \"${array[1]}\"}"
+printf "%s\n" "$mode" > $dest
+printf "%s\n" "${array[1]}" >> $dest

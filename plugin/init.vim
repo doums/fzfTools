@@ -10,10 +10,15 @@ if exists("g:fzfInit")
 endif
 let g:fzfInit = 1
 
-function s:InitTermWin()
+function s:InitTermWin(file)
+  if has("nvim")
+    let ft = getbufvar(a:file, "&filetype")
+    if ft != "fzfTools"
+      return
+    endif
+  endif
   execute "normal :\<BS>"
   execute "normal \<C-w>J"
-  call term_setsize('', float2nr(floor(&lines*0.25)), 0)
   let s:lastStatus = &laststatus
   let s:showMode = &showmode
   let s:ruler = &ruler
@@ -27,7 +32,13 @@ function s:InitTermWin()
   setlocal nonumber
 endfunction
 
-function s:RestoreWinOpt()
+function s:RestoreWinOpt(file)
+  if has("nvim")
+    let ft = getbufvar(a:file, "&filetype")
+    if ft != "fzfTools"
+      return
+    endif
+  endif
   let &laststatus = s:lastStatus
   let &showmode = s:showMode
   let &ruler = s:ruler
@@ -37,8 +48,13 @@ endfunction
 
 augroup fzfTools
   autocmd!
-  autocmd TerminalWinOpen,BufEnter Ls,Buf call <SID>InitTermWin()
-  autocmd BufLeave,BufDelete Ls,Buf call <SID>RestoreWinOpt()
+  if has("nvim")
+    autocmd TermOpen,BufEnter */ls.sh*,*/buf.sh* call <SID>InitTermWin(expand("<afile>"))
+    autocmd BufLeave,TermClose */ls.sh*,*/buf.sh* call <SID>RestoreWinOpt(expand("<afile>"))
+  else
+    autocmd TerminalWinOpen,BufEnter fzfTools call <SID>InitTermWin(expand("<afile>"))
+    autocmd BufLeave,BufDelete fzfTools call <SID>RestoreWinOpt(expand("<afile>"))
+  endif
   autocmd VimEnter,DirChanged * call fzfTools#SetScripts()
 augroup END
 

@@ -6,27 +6,34 @@
 
 set -eE
 
-send_to_vim () {
-  printf '%b["call", "Tapi_fzfToolsLs", %s]%b' "\e]51;" "$1" "\07"
-}
+dir=/tmp/nvim
+dest=$dir/fzfTools_ls
+
+if [ -e $dest ]; then
+  rm $dest
+  touch $dest
+elif [ -d $dir ]; then
+  touch $dest
+else
+  mkdir $dir
+  touch $dest
+fi
 
 on_trap () {
   if [ "$?" -eq 130 ] && [[ "$BASH_COMMAND" =~ "fzf_output" ]]; then
-    send_to_vim "{\"mode\": \"\", \"selection\": []}"
     exit 0
   fi
-  send_to_vim "{\"error\": \"an error occurred in $0, line $1\"}"
 }
 
 trap 'on_trap "$LINENO"' ERR
 
 if ! fzf --version &> /dev/null; then
-  send_to_vim "{\"error\": \"fzf not found\"}"
+  printf "%s\n" "fzf not found" > $dest
   exit 1
 fi
 
 if ! bat --version &> /dev/null; then
-  send_to_vim "{\"error\": \"bat not found\"}"
+  printf "%s\n" "bat not found" > $dest
   exit 1
 fi
 
@@ -60,17 +67,15 @@ case "${array[0]}" in
   *) mode="default" ;;
 esac
 
+printf "%s\n" "$mode" > $dest
+
 unset 'array[0]'
 
 for index in "${!array[@]}"; do
-  selection+="\""
+  file=""
   if [ "$directory" ]; then
-    selection+=$directory
+    file=$directory
   fi
-  selection+="${array[index]}\""
-  if [ "$index" -lt "${#array[@]}" ]; then
-    selection+=", "
-  fi
+  file+="${array[index]}"
+  printf "%s\n" "$file" >> $dest
 done
-
-send_to_vim "{\"mode\": \"$mode\", \"selection\": [$selection]}"

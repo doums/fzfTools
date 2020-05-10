@@ -10,77 +10,65 @@ if exists("g:fzfBuf")
 endif
 let g:fzfBuf = 1
 
-let s:termBuf = 0
 let s:prevWinId = 0
 let s:buffers = []
-let s:response = 0
 let s:script = findfile("bin/buf.sh", &runtimepath)
 let s:jobRunning = 0
-let s:apiCalled = 0
+let s:bufNr = -1
 
 function buf#SetScript()
   let s:script = findfile("bin/buf.sh", &runtimepath)
 endfunction
 
-function Tapi_fzfToolsBuf(bufNumber, json)
-  let s:apiCalled = 1
-  if exists("a:json.error")
-    call s:PrintErr(a:json.error)
-    call s:ResetVariables()
-    return
-  endif
-  let s:response = {'mode': a:json.mode,
-        \ 'selected': a:json.selected}
-  call s:ExecuteCommands()
-endfunction
-
-function FzfToolsBufOnExit(job, exitStatus)
+function FzfToolsBufOnExit(job, exitStatus, ...)
   let s:jobRunning = 0
+  quit
   call win_gotoid(s:prevWinId)
+  if has("nvim")
+    execute s:bufNr.'bdelete!'
+  endif
+  let list = readfile('/tmp/nvim/fzfTools_buf')
   if a:exitStatus != 0
+    call s:PrintErr(get(list, 0, "empty"))
     call s:ResetVariables()
     return
   endif
-  call s:ExecuteCommands()
-endfunction
-
-function s:ExecuteCommands()
-  if !s:jobRunning && s:apiCalled
-    let selected = s:response.selected
-    let mode = s:response.mode
-    if !empty(selected)
-      for buffer in s:buffers
-        if buffer.number == selected
-          if buffer.displayed && mode == "default"
-            call win_gotoid(buffer.windowsId[0])
-          else
-            call win_gotoid(s:prevWinId)
-            if mode == "default"
-              execute "buffer ".selected
-            elseif mode == "hSplit"
-              execute "sbuffer ".selected
-            elseif mode == "vSplit"
-              execute "vertical sbuffer ".selected
-            elseif mode == "tab"
-              execute "tabnew"
-              execute "buffer ".selected
-            endif
-          endif
-          break
-        endif
-      endfor
-    endif
+  if empty(list)
     call s:ResetVariables()
+    return
   endif
+  let mode=get(list, 0, "default")
+  let selected = get(list, 1)
+  if !empty(selected)
+    for buffer in s:buffers
+      if buffer.number == selected
+        if buffer.displayed && mode == "default"
+          call win_gotoid(buffer.windowsId[0])
+        else
+          call win_gotoid(s:prevWinId)
+          if mode == "default"
+            execute "buffer ".selected
+          elseif mode == "hSplit"
+            execute "sbuffer ".selected
+          elseif mode == "vSplit"
+            execute "vertical sbuffer ".selected
+          elseif mode == "tab"
+            execute "tabnew"
+            execute "buffer ".selected
+          endif
+        endif
+        break
+      endif
+    endfor
+  endif
+  call s:ResetVariables()
 endfunction
 
 function s:ResetVariables()
-  let s:termBuf = 0
   let s:prevWinId = 0
   let s:buffers = []
-  let s:response = 0
   let s:jobRunning = 0
-  let s:apiCalled = 0
+  let s:bufNr = -1
 endfunction
 
 function s:GetBufsInfo()
@@ -131,15 +119,31 @@ function buf#Buf()
   let s:buffers = bufsInfo.buffers
   let serializedBufs = s:SerializeBufs()
   let command = s:script..' "'..bufsInfo.currentBuf..'" "'..serializedBufs..'"'
-  let s:termBuf = term_start(command, {
-        \ "term_name": "Buf",
-        \ "term_api": "Tapi_fzfToolsBuf",
-        \ "term_rows": float2nr(floor(&lines*0.25)),
-        \ "exit_cb": "FzfToolsBufOnExit",
-        \ "term_finish": "close",
-        \ "term_kill": "SIGKILL"
-        \ })
-  call setbufvar(s:termBuf, "&filetype", "fzfBuf")
+  let h = float2nr(floor(&lines*0.30))
+  let tabMod = 0
+  if h > 5
+    bo new
+  else
+    tabnew
+    let tabMod = 1
+  endif
+  let s:bufNr = bufnr()
+  call setbufvar(s:bufNr, "&filetype", "fzfTools")
+  if has("nvim")
+    call termopen(command, { "on_exit": "FzfToolsBufOnExit" })
+  else
+    call term_start(command, {
+          \ "curwin": 1,
+          \ "term_name": "fzfTools",
+          \ "exit_cb": "FzfToolsBufOnExit",
+          \ "term_finish": "close",
+          \ "term_kill": "SIGKILL"
+          \ })
+  endif
+  if !tabMod
+    execute "resize ".h
+  endif
+  startinsert
 endfunction
 
 function s:PrintErr(msg)
