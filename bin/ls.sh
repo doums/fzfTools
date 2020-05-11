@@ -53,7 +53,7 @@ prompt="${array[${#array[@]}-1]}"
 
 fzf_output=$(fzf \
 --multi \
---preview="bat --line-range :50 --color always {}" \
+--preview="COLORTERM=truecolor bat --line-range :50 --color=always {}" \
 --expect=ctrl-s,ctrl-v,ctrl-t \
 --preview-window=right:70%:noborder \
 --prompt="$prompt ")
