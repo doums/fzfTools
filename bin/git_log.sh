@@ -42,11 +42,19 @@ git status > /dev/null 2> $dest
 case $# in
   0)
     git log --oneline --decorate=short | fzf \
-      --preview="git show --color=always --abbrev-commit --pretty=medium --date=format:%c {1}" \
+      --preview="git show --color --abbrev-commit --pretty=medium --date=format:%c {1}" \
       --preview-window=right:70%:noborder \
       --header="git log"
   ;;
-  1) git log -p --date=format:%c --abbrev-commit -- "$1";;
+  1)
+    git log --oneline --parents --decorate=short --diff-filter=a -- "$1" | fzf \
+      --with-nth=3.. \
+      --preview="git show --color --abbrev-commit -s --pretty=medium --date=format:%c {1} \
+      && echo -e \n \
+      && git diff -p --color {2} {1} -- $1" \
+      --preview-window=right:70%:noborder \
+      --header="git log $1"
+  ;;
   3) git log -L "$1,$2:$3" --date=format:%c --abbrev-commit 2> $dest;;
   *)
     printf "%s\n" "wrong arguments" > $dest
