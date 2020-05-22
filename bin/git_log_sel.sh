@@ -35,3 +35,5 @@ if [ ! $# -eq 3 ]; then
 fi
 
 git log -L "$1,$2:$3" --date=format:%c --abbrev-commit 2> $dest
+echo -e "\n"
+read -rsN 1 -p "press any key to quit... "

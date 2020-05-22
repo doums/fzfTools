@@ -49,8 +49,8 @@ endfunction
 augroup fzfTools
   autocmd!
   if has("nvim")
-    autocmd TermOpen,BufEnter */ls.sh*,*/buf.sh* call <SID>InitTermWin(expand("<afile>"))
-    autocmd BufLeave,TermClose */ls.sh*,*/buf.sh* call <SID>RestoreWinOpt(expand("<afile>"))
+    autocmd TermOpen,BufEnter */ls.sh*,*/buf.sh*,*/git_log_sel.sh* call <SID>InitTermWin(expand("<afile>"))
+    autocmd BufLeave,TermClose */ls.sh*,*/buf.sh*,*/git_log_sel.sh* call <SID>RestoreWinOpt(expand("<afile>"))
   else
     autocmd TerminalWinOpen,BufEnter fzfTools call <SID>InitTermWin(expand("<afile>"))
     autocmd BufLeave,BufDelete fzfTools call <SID>RestoreWinOpt(expand("<afile>"))
@@ -65,6 +65,10 @@ noremap <SID>LsMap :Ls<CR>
 command Buf call fzfTools#Buf()
 noremap <silent> <unique> <script> <Plug>Buf <SID>BufMap
 noremap <SID>BufMap :Buf<CR>
+
+command -range GitLogSel call fzfTools#GitLogSel()
+noremap <silent> <unique> <script> <Plug>GitLogSel <SID>GitLogSelMap
+noremap <SID>GitLogSelMap :GitLogSel<CR>
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

@@ -22,9 +22,14 @@ function fzfTools#Buf()
   call buf#Buf()
 endfunction
 
+function fzfTools#GitLogSel()
+  call git_log_sel#GitLogSel()
+endfunction
+
 function fzfTools#SetScripts()
   call ls#SetScript()
   call buf#SetScript()
+  call git_log_sel#SetScript()
 endfunction
 
 let &cpo = s:save_cpo
