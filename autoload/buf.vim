@@ -10,31 +10,20 @@ if exists("g:fzfBuf")
 endif
 let g:fzfBuf = 1
 
-let s:prevWinId = 0
 let s:buffers = []
 let s:script = findfile("bin/buf.sh", &runtimepath)
-let s:jobRunning = 0
-let s:bufNr = -1
 
 function buf#SetScript()
   let s:script = findfile("bin/buf.sh", &runtimepath)
 endfunction
 
-function FzfToolsBufOnExit(job, exitStatus, ...)
-  let s:jobRunning = 0
-  quit
-  call win_gotoid(s:prevWinId)
-  if has("nvim")
-    execute s:bufNr.'bdelete!'
-  endif
+function s:OnExit(exitStatus)
   let list = readfile('/tmp/nvim/fzfTools_buf')
   if a:exitStatus != 0
     call s:PrintErr(get(list, 0, "empty"))
-    call s:ResetVariables()
     return
   endif
   if empty(list)
-    call s:ResetVariables()
     return
   endif
   let mode=get(list, 0, "default")
@@ -45,7 +34,6 @@ function FzfToolsBufOnExit(job, exitStatus, ...)
         if buffer.displayed && mode == "default"
           call win_gotoid(buffer.windowsId[0])
         else
-          call win_gotoid(s:prevWinId)
           if mode == "default"
             execute "buffer ".selected
           elseif mode == "hSplit"
@@ -61,14 +49,7 @@ function FzfToolsBufOnExit(job, exitStatus, ...)
       endif
     endfor
   endif
-  call s:ResetVariables()
-endfunction
-
-function s:ResetVariables()
-  let s:prevWinId = 0
   let s:buffers = []
-  let s:jobRunning = 0
-  let s:bufNr = -1
 endfunction
 
 function s:GetBufsInfo()
@@ -110,40 +91,15 @@ function s:SerializeBufs()
 endfunction
 
 function buf#Buf()
-  if s:jobRunning
+  if fzfTools#IsRunning()
     return
   endif
-  let s:jobRunning = 1
-  let s:prevWinId = win_getid()
   let bufsInfo = s:GetBufsInfo()
   let s:buffers = bufsInfo.buffers
   let serializedBufs = s:SerializeBufs()
   let command = s:script..' "'..bufsInfo.currentBuf..'" "'..serializedBufs..'"'
-  let h = float2nr(floor(&lines*0.30))
-  let tabMod = 0
-  if h > 5
-    bo new
-  else
-    tabnew
-    let tabMod = 1
-  endif
-  let s:bufNr = bufnr()
-  call setbufvar(s:bufNr, "&filetype", "fzfTools")
-  if has("nvim")
-    call termopen(command, { "on_exit": "FzfToolsBufOnExit" })
-  else
-    call term_start(command, {
-          \ "curwin": 1,
-          \ "term_name": "fzfTools",
-          \ "exit_cb": "FzfToolsBufOnExit",
-          \ "term_finish": "close",
-          \ "term_kill": "SIGKILL"
-          \ })
-  endif
-  if !tabMod
-    execute "resize ".h
-  endif
-  startinsert
+  let Callback = function("s:OnExit")
+  call fzfTools#NewTerm(command, Callback)
 endfunction
 
 function s:PrintErr(msg)
