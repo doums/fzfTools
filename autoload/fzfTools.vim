@@ -71,7 +71,10 @@ function fzfTools#NewTerm(command, Callback)
   let s:jobRunning = 1
   let s:callback = a:Callback
   let s:prevWinId = win_getid()
-  let h = float2nr(floor(&lines*0.40))
+  if !exists('g:fzfToolsHeight')
+    let g:fzfToolsHeight = 40
+  endif
+  let h = float2nr(floor(&lines * (g:fzfToolsHeight / 100.0)))
   let tabMod = 0
   if h > 9
     bo new fzfTools

@@ -37,6 +37,8 @@ if ! git --version &> /dev/null; then
   exit 1
 fi
 
+git status > /dev/null 2> $dest
+
 case $# in
   0)
     git log --oneline --decorate=short | fzf \
