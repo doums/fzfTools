@@ -27,6 +27,14 @@ function fzfTools#Buf()
   call buf#Buf()
 endfunction
 
+function fzfTools#GitLog(...)
+  if a:0 == 1
+    call git_log#GitLog(a:1)
+  else
+    call git_log#GitLog()
+  endif
+endfunction
+
 function fzfTools#GitLogSel()
   call git_log_sel#GitLogSel()
 endfunction
@@ -34,6 +42,7 @@ endfunction
 function fzfTools#SetScripts()
   call ls#SetScript()
   call buf#SetScript()
+  call git_log#SetScript()
   call git_log_sel#SetScript()
 endfunction
 
@@ -88,6 +97,12 @@ function fzfTools#NewTerm(command, Callback)
     execute "resize ".h
   endif
   startinsert
+endfunction
+
+function fzfTools#PrintErr(msg)
+  echohl ErrorMsg
+  echom a:msg
+  echohl None
 endfunction
 
 let &cpo = s:save_cpo

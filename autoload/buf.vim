@@ -20,7 +20,7 @@ endfunction
 function s:OnExit(exitStatus)
   let list = readfile('/tmp/nvim/fzfTools_buf')
   if a:exitStatus != 0
-    call s:PrintErr(get(list, 0, "empty"))
+    call fzfTools#PrintErr(get(list, 0, "empty"))
     return
   endif
   if empty(list)
@@ -100,12 +100,6 @@ function buf#Buf()
   let command = s:script..' "'..bufsInfo.currentBuf..'" "'..serializedBufs..'"'
   let Callback = function("s:OnExit")
   call fzfTools#NewTerm(command, Callback)
-endfunction
-
-function s:PrintErr(msg)
-  echohl ErrorMsg
-  echom a:msg
-  echohl None
 endfunction
 
 let &cpo = s:save_cpo

@@ -54,6 +54,10 @@ command Buf call fzfTools#Buf()
 noremap <silent> <unique> <script> <Plug>Buf <SID>BufMap
 noremap <SID>BufMap :Buf<CR>
 
+command -nargs=? -complete=file GitLog call fzfTools#GitLog(<f-args>)
+noremap <silent> <unique> <script> <Plug>GitLog <SID>GitLogMap
+noremap <SID>GitLogMap :GitLog<CR>
+
 command -range GitLogSel call fzfTools#GitLogSel()
 noremap <silent> <unique> <script> <Plug>GitLogSel <SID>GitLogSelMap
 noremap <SID>GitLogSelMap :GitLogSel<CR>

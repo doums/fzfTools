@@ -5,14 +5,14 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-if exists("g:fzfGitLogSel")
+if exists("g:fzfGitLog")
   finish
 endif
-let g:fzfGitLogSel = 1
+let g:fzfGitLog = 1
 
 let s:script = findfile("bin/git_log.sh", &runtimepath)
 
-function git_log_sel#SetScript()
+function git_log#SetScript()
   let s:script = findfile("bin/git_log.sh", &runtimepath)
 endfunction
 
@@ -24,24 +24,14 @@ function s:OnExit(exitStatus)
   endif
 endfunction
 
-function s:GetSelection()
-  let start = getpos("'<")[1]
-  let end = getpos("'>")[1]
-  if start > end
-    let tmp = start
-    let start = end
-    let end = tmp
-  endif
-  return [start, end]
-endfunction
-
-function git_log_sel#GitLogSel()
+function git_log#GitLog(...)
   if fzfTools#IsRunning()
     return
   endif
   let command = s:script
-  let selection = s:GetSelection()
-  let command = s:script." ".selection[0]." ".selection[1]." ".bufname()
+  if a:0 == 1
+    let command = s:script." ".expand(a:1)
+  endif
   let Callback = function("s:OnExit")
   call fzfTools#NewTerm(command, Callback)
 endfunction

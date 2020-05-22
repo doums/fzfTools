@@ -20,7 +20,7 @@ endfunction
 function s:OnExit(exitStatus)
   let list = readfile('/tmp/nvim/fzfTools_ls')
   if a:exitStatus != 0
-    call s:PrintErr(get(list, 0, "empty"))
+    call fzfTools#PrintErr(get(list, 0, "empty"))
     return
   endif
   if empty(list)
@@ -53,19 +53,13 @@ function ls#Ls(...)
   if a:0 == 1
     let directory = expand(a:1)
     if !isdirectory(directory)
-      call s:PrintErr(a:1." is not a directory")
+      call fzfTools#PrintErr(a:1." is not a directory")
       return
     endif
     let command = s:script." ".directory
   endif
   let Callback = function("s:OnExit")
   call fzfTools#NewTerm(command, Callback)
-endfunction
-
-function s:PrintErr(msg)
-  echohl ErrorMsg
-  echom a:msg
-  echohl None
 endfunction
 
 let &cpo = s:save_cpo
