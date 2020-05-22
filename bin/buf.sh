@@ -25,7 +25,7 @@ on_trap () {
   fi
 }
 
-trap 'on_trap "$LINENO"' ERR
+trap on_trap ERR
 
 if ! fzf --version &> /dev/null; then
   printf "%s\n" "fzf not found" > $dest

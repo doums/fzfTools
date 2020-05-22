@@ -6,6 +6,14 @@
 
 set -e
 
+on_trap () {
+  if [ "$?" -eq 130 ] && [[ "$BASH_COMMAND" =~ "fzf" ]]; then
+    exit 0
+  fi
+}
+
+trap on_trap ERR
+
 dir=/tmp/nvim
 dest=$dir/fzfTools_git_log
 

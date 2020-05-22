@@ -22,7 +22,7 @@ So I decided to follow the initial advise above and write my own plugin in a mor
 
 If you use a plugin manager, follow the traditional way.
 
-For example with [vim-plug](https://github.com/junegunn/vim-plug) add this in `.vimrc`
+For example with [vim-plug](https://github.com/junegunn/vim-plug) add this in `.vimrc`/`init.vim`
 ```
 Plug 'doums/fzfTools'
 ```
@@ -69,6 +69,19 @@ usage:
 nmap <C-b> <Plug>Buf
 ```
 
+#### GitLog
+Show commit logs (optionally for a given file).
+
+usage:
+- **`GitLog` command**
+```
+:GitLog [file]
+```
+- **`<Plug>GitLog` mapping**
+```
+nmap <C-g> <Plug>GitLog
+```
+
 #### GitLogSel
 Trace the git evolution of the current selection.
 
@@ -79,11 +92,11 @@ usage:
 ```
 - **`<Plug>GitLogSel` mapping**
 ```
-nmap <C-g> <Plug>GitLogSel
+vmap <C-g> <Plug>GitLogSel
 ```
 
 ### credits
-junegunn for fzf and fzf.vim
+junegunn for fzf
 
 ### license
 Mozilla Public License 2.0
