@@ -37,7 +37,7 @@ If you use vim package `:h packages`.
 
 ### tools
 
-For both of the following tools you can open the selected item(s) in several ways.\
+For Ls and Buf tools you can open the selected item(s) in several ways:\
 `enter` in the current window\
 `ctrl-s` horizontal split\
 `ctrl-v` vertical split\
