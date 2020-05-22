@@ -67,6 +67,18 @@ usage:
 nmap <C-b> <Plug>Buf
 ```
 
+#### GitLogSel
+Trace the git evolution of the current selection.\
+usage:
+- **`GitLogSel` command**
+```
+:GitLogSel
+```
+- **`<Plug>GitLogSel` mapping**
+```
+nmap <C-g> <Plug>GitLogSel
+```
+
 ### credits
 junegunn for fzf and fzf.vim
 
