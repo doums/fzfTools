@@ -41,6 +41,10 @@ function git_log_sel#GitLogSel()
   endif
   let command = s:script
   let selection = s:GetSelection()
+  if selection[0] == 0 || selection[1] == 0
+    call fzfTools#PrintErr("invalid selection")
+    return
+  endif
   let command = s:script." ".selection[0]." ".selection[1]." ".bufname()
   let Callback = function("s:OnExit")
   call fzfTools#NewTerm(command, Callback)

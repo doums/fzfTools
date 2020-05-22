@@ -77,7 +77,7 @@ usage:
 ```
 :GitLog [file]
 ```
-- **`<Plug>GitLog` mapping**
+- **`<Plug>FGitLog` mapping**
 ```
 nmap <C-g> <Plug>GitLog
 ```
