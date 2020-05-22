@@ -44,7 +44,8 @@ For both of the following tools you can open the selected item(s) in several way
 `ctrl-t` in a new tab
 
 #### Ls
-List the files in the current directory or in the given directory and open the one(s) you need.\
+List the files in the current directory or in the given directory and open the one(s) you need.
+
 usage:
 - **`Ls` command**
 ```
@@ -56,7 +57,8 @@ nmap <C-s> <Plug>Ls
 ```
 
 #### Buf
-List the loaded and listed buffers and goto/open the one you need.\
+List the loaded and listed buffers and goto/open the one you need.
+
 usage:
 - **`Buf` command**
 ```
@@ -68,7 +70,8 @@ nmap <C-b> <Plug>Buf
 ```
 
 #### GitLogSel
-Trace the git evolution of the current selection.\
+Trace the git evolution of the current selection.
+
 usage:
 - **`GitLogSel` command**
 ```
