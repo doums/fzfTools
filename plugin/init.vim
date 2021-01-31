@@ -10,40 +10,8 @@ if exists("g:fzfInit")
 endif
 let g:fzfInit = 1
 
-function s:InitTermWin()
-  execute "normal :\<BS>"
-  execute "normal \<C-w>J"
-  let s:lastStatus = &laststatus
-  let s:showMode = &showmode
-  let s:ruler = &ruler
-  let s:showCmd = &showcmd
-  let s:cmdHeight = &cmdheight
-  set laststatus=0
-  set noshowmode
-  set noruler
-  set noshowcmd
-  set cmdheight=1
-  setlocal nonumber
-  setlocal norelativenumber
-endfunction
-
-function s:RestoreWinOpt()
-  let &laststatus = s:lastStatus
-  let &showmode = s:showMode
-  let &ruler = s:ruler
-  let &showcmd = s:showCmd
-  let &cmdheight = s:cmdHeight
-endfunction
-
 augroup fzfTools
   autocmd!
-  if has("nvim")
-    autocmd TermOpen,BufEnter fzfTools call <SID>InitTermWin()
-    autocmd BufLeave,TermClose fzfTools call <SID>RestoreWinOpt()
-  else
-    autocmd TerminalWinOpen,BufEnter fzfTools call <SID>InitTermWin()
-    autocmd BufLeave,BufDelete fzfTools call <SID>RestoreWinOpt()
-  endif
   autocmd VimEnter,DirChanged * call fzfTools#SetScripts()
 augroup END
 

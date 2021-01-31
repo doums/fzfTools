@@ -25,15 +25,11 @@ function s:OnExit(exitStatus)
 endfunction
 
 function git_log#GitLog(...)
-  if fzfTools#IsRunning()
-    return
-  endif
   let command = s:script
   if a:0 == 1
     let command = s:script." ".expand(a:1)
   endif
-  let Callback = function("s:OnExit")
-  call fzfTools#NewTerm(command, Callback)
+  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'layout': { 'position': 'bottom', 'size': 40, 'min': 20 } })
 endfunction
 
 let &cpo = s:save_cpo

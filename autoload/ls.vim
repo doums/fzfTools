@@ -46,9 +46,6 @@ function s:OnExit(exitStatus)
 endfunction
 
 function ls#Ls(...)
-  if fzfTools#IsRunning()
-    return
-  endif
   let command = s:script
   if a:0 == 1
     let directory = expand(a:1)
@@ -58,8 +55,7 @@ function ls#Ls(...)
     endif
     let command = s:script." ".directory
   endif
-  let Callback = function("s:OnExit")
-  call fzfTools#NewTerm(command, Callback)
+  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'layout': { 'position': 'bottom', 'size': 40, 'min': 20 } })
 endfunction
 
 let &cpo = s:save_cpo

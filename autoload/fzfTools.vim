@@ -46,62 +46,6 @@ function fzfTools#SetScripts()
   call git_log_sel#SetScript()
 endfunction
 
-function fzfTools#IsRunning()
-  return s:jobRunning
-endfunction
-
-function FzfToolsOnExit(jobId, exitStatus, ...)
-  let s:jobRunning = 0
-  quit
-  call win_gotoid(s:prevWinId)
-  if has("nvim")
-    execute s:bufNr.'bdelete!'
-  endif
-  call s:callback(a:exitStatus)
-  let s:prevWinId = 0
-  let s:jobRunning = 0
-  let s:bufNr = -1
-  let s:callback = 0
-endfunction
-
-function fzfTools#NewTerm(command, Callback)
-  if s:jobRunning
-    return
-  endif
-  let s:jobRunning = 1
-  let s:callback = a:Callback
-  let s:prevWinId = win_getid()
-  if !exists('g:fzfToolsHeight')
-    let g:fzfToolsHeight = 40
-  endif
-  let h = float2nr(floor(&lines * (g:fzfToolsHeight / 100.0)))
-  let tabMod = 0
-  if h > 9
-    bo new fzfTools
-  else
-    tabnew fzfTools
-    let tabMod = 1
-  endif
-  let s:bufNr = bufnr()
-  call setbufvar(s:bufNr, "&filetype", "fzfTools")
-  if has("nvim")
-    call termopen(a:command, { "on_exit": "FzfToolsOnExit" })
-    file fzfTools
-  else
-    call term_start(a:command, {
-          \ "curwin": 1,
-          \ "term_name": "fzfTools",
-          \ "exit_cb": "FzfToolsOnExit",
-          \ "term_finish": "close",
-          \ "term_kill": "SIGKILL"
-          \ })
-  endif
-  if !tabMod
-    execute "resize ".h
-  endif
-  startinsert
-endfunction
-
 function fzfTools#PrintErr(msg)
   echohl ErrorMsg
   echom a:msg

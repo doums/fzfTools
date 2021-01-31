@@ -91,15 +91,11 @@ function s:SerializeBufs()
 endfunction
 
 function buf#Buf()
-  if fzfTools#IsRunning()
-    return
-  endif
   let bufsInfo = s:GetBufsInfo()
   let s:buffers = bufsInfo.buffers
   let serializedBufs = s:SerializeBufs()
   let command = s:script..' "'..bufsInfo.currentBuf..'" "'..serializedBufs..'"'
-  let Callback = function("s:OnExit")
-  call fzfTools#NewTerm(command, Callback)
+  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'layout': { 'position': 'bottom', 'size': 40, 'min': 20 } })
 endfunction
 
 let &cpo = s:save_cpo

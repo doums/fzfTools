@@ -36,9 +36,6 @@ function s:GetSelection()
 endfunction
 
 function git_log_sel#GitLogSel()
-  if fzfTools#IsRunning()
-    return
-  endif
   let command = s:script
   let selection = s:GetSelection()
   if selection[0] == 0 || selection[1] == 0
@@ -46,8 +43,7 @@ function git_log_sel#GitLogSel()
     return
   endif
   let command = s:script." ".selection[0]." ".selection[1]." ".bufname()
-  let Callback = function("s:OnExit")
-  call fzfTools#NewTerm(command, Callback)
+  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'layout': { 'position': 'bottom', 'size': 40, 'min': 20 } })
 endfunction
 
 let &cpo = s:save_cpo
