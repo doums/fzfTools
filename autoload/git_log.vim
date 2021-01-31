@@ -29,7 +29,7 @@ function git_log#GitLog(...)
   if a:0 == 1
     let command = s:script." ".expand(a:1)
   endif
-  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'layout': { 'position': 'bottom', 'size': 40, 'min': 20 } })
+  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'layout': { 'position': 'bottom', 'size': 40, 'min': 10 } })
 endfunction
 
 let &cpo = s:save_cpo

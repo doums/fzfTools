@@ -43,7 +43,7 @@ function git_log_sel#GitLogSel()
     return
   endif
   let command = s:script." ".selection[0]." ".selection[1]." ".bufname()
-  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'layout': { 'position': 'bottom', 'size': 40, 'min': 20 } })
+  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'layout': { 'position': 'bottom', 'size': 40, 'min': 10 } })
 endfunction
 
 let &cpo = s:save_cpo
