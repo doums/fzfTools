@@ -55,7 +55,7 @@ function ls#Ls(...)
     endif
     let command = s:script." ".directory
   endif
-  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'layout': { 'position': 'bottom', 'size': 40, 'min': 10 } })
+  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'layout': { 'position': 'bottom', 'size': 40, 'min': 10 }, 'name': 'ls' })
 endfunction
 
 let &cpo = s:save_cpo

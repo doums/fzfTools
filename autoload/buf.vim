@@ -95,7 +95,7 @@ function buf#Buf()
   let s:buffers = bufsInfo.buffers
   let serializedBufs = s:SerializeBufs()
   let command = s:script..' "'..bufsInfo.currentBuf..'" "'..serializedBufs..'"'
-  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'layout': { 'position': 'bottom', 'size': 40, 'min': 10 } })
+  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'layout': { 'position': 'bottom', 'size': 40, 'min': 10 }, 'name': 'buf' })
 endfunction
 
 let &cpo = s:save_cpo
