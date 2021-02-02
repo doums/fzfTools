@@ -11,12 +11,13 @@ But after inspecting the code behind this plugin, I realized that it offers to s
 In addition, it offers a high level of customization, lots of predefined commands, mappings etc...\
 So the code is pretty huge (it's normal).
 
-But personally, I only use nvim/vim on my Arch Linux and using a plugin like this just seemed overkill for my needs.\
-So I decided to follow the initial advise above and write my own plugin in a more [kiss'ish](https://en.wikipedia.org/wiki/KISS_principle) way.
+But personally, I only use nvim on my Arch Linux and using a plugin like this just seemed overkill for my needs.\
+So I decided to follow the initial advise above and write my own plugin in a more kiss'ish way.
 
 ### prerequisites
 - [fzf](https://github.com/junegunn/fzf)
 - [bat](https://github.com/sharkdp/bat)
+- [oterm](https://github.com/doums/oterm)
 
 ### install
 
