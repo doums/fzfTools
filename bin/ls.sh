@@ -8,6 +8,7 @@ set -eE
 
 dir=/tmp/nvim
 dest=$dir/fzfTools_ls
+preview="cat"
 
 if [ -e $dest ]; then
   rm $dest
@@ -32,9 +33,8 @@ if ! fzf --version &> /dev/null; then
   exit 1
 fi
 
-if ! bat --version &> /dev/null; then
-  printf "%s\n" "bat not found" > $dest
-  exit 1
+if bat --version &> /dev/null; then
+  preview="COLORTERM=truecolor bat --line-range :50 --color=always"
 fi
 
 if [ "$1" ]; then
@@ -53,7 +53,7 @@ prompt="${array[${#array[@]}-1]}"
 
 fzf_output=$(fzf \
 --multi \
---preview="COLORTERM=truecolor bat --line-range :50 --color=always {}" \
+--preview="$preview {}" \
 --expect=ctrl-s,ctrl-v,ctrl-t \
 --preview-window=right:70%:noborder \
 --prompt="$prompt ")

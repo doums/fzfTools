@@ -16,7 +16,6 @@ So I decided to follow the initial advise above and write my own plugin in a mor
 
 ### prerequisites
 - [fzf](https://github.com/junegunn/fzf)
-- [bat](https://github.com/sharkdp/bat)
 - [oterm](https://github.com/doums/oterm)
 
 ### install
