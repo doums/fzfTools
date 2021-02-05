@@ -16,7 +16,7 @@ function git_log_sel#SetScript()
   let s:script = findfile("bin/git_log.sh", &runtimepath)
 endfunction
 
-function s:OnExit(exitStatus)
+function s:OnExit(job, exitStatus)
   let list = readfile('/tmp/nvim/fzfTools_git_log')
   if a:exitStatus != 0
     call fzfTools#PrintErr(get(list, 0, "something went wrong"))

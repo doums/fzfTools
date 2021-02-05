@@ -17,7 +17,7 @@ function buf#SetScript()
   let s:script = findfile("bin/buf.sh", &runtimepath)
 endfunction
 
-function s:OnExit(exitStatus)
+function s:OnExit(job, exitStatus)
   let list = readfile('/tmp/nvim/fzfTools_buf')
   if a:exitStatus != 0
     call fzfTools#PrintErr(get(list, 0, "empty"))

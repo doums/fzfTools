@@ -17,7 +17,7 @@ function ls#SetScript()
   let s:script = findfile("bin/ls.sh", &runtimepath)
 endfunction
 
-function s:OnExit(exitStatus)
+function s:OnExit(job, exitStatus)
   let list = readfile('/tmp/nvim/fzfTools_ls')
   if a:exitStatus != 0
     call fzfTools#PrintErr(get(list, 0, "empty"))
