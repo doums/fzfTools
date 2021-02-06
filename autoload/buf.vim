@@ -55,7 +55,7 @@ endfunction
 function s:GetBufsInfo()
   let buffers = []
   let currentBuf = ""
-  for buffer in getbufinfo({'buflisted': 1, 'bufloaded': 1})
+  for buffer in getbufinfo({'buflisted': 1})
     let name = buffer.name
     if empty(buffer.name)
       let name = '-'
@@ -66,7 +66,7 @@ function s:GetBufsInfo()
       call add(buffers, {
             \ 'number': buffer.bufnr,
             \ 'name': name,
-            \ 'displayed': !buffer.hidden,
+            \ 'displayed': !empty(buffer.windows),
             \ 'windowsId': buffer.windows
             \ })
     else
