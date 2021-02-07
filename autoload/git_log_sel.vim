@@ -2,13 +2,13 @@
 " License, v. 2.0. If a copy of the MPL was not distributed with this
 " file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-let s:save_cpo = &cpo
-set cpo&vim
-
 if exists("g:fzfGitLogSel")
   finish
 endif
 let g:fzfGitLogSel = 1
+
+let s:save_cpo = &cpo
+set cpo&vim
 
 let s:script = findfile("bin/git_log.sh", &runtimepath)
 
