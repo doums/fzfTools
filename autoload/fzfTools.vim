@@ -2,10 +2,10 @@
 " License, v. 2.0. If a copy of the MPL was not distributed with this
 " file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-if exists("g:fzfTools")
+if exists("g:fzfTools_autoload")
   finish
 endif
-let g:fzfTools = 1
+let g:fzfTools_autoload = 1
 
 let s:save_cpo = &cpo
 set cpo&vim

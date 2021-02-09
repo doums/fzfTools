@@ -55,7 +55,11 @@ function ls#Ls(...)
     endif
     let command = s:script." ".directory
   endif
-  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'name': 'ls' })
+  let options = { 'command': command, 'callback': funcref("s:OnExit"), 'name': 'ls' }
+  if exists('g:fzfTools') && has_key(g:fzfTools, 'ls')
+    let options.layout = g:fzfTools.ls
+  endif
+  call oterm#spawn(options)
 endfunction
 
 let &cpo = s:save_cpo

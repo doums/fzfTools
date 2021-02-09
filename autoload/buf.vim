@@ -95,7 +95,11 @@ function buf#Buf()
   let s:buffers = bufsInfo.buffers
   let serializedBufs = s:SerializeBufs()
   let command = s:script..' "'..bufsInfo.currentBuf..'" "'..serializedBufs..'"'
-  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'name': 'buf' })
+  let options = { 'command': command, 'callback': funcref("s:OnExit"), 'name': 'buf' }
+  if exists('g:fzfTools') && has_key(g:fzfTools, 'buf')
+    let options.layout = g:fzfTools.buf
+  endif
+  call oterm#spawn(options)
 endfunction
 
 let &cpo = s:save_cpo

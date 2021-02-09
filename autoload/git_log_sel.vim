@@ -43,7 +43,11 @@ function git_log_sel#GitLogSel()
     return
   endif
   let command = s:script." ".selection[0]." ".selection[1]." ".bufname()
-  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'name': 'gitlogsel' })
+  let options = { 'command': command, 'callback': funcref("s:OnExit"), 'name': 'gitlogsel' }
+  if exists('g:fzfTools') && has_key(g:fzfTools, 'gitlogsel')
+    let options.layout = g:fzfTools.gitlogsel
+  endif
+  call oterm#spawn(options)
 endfunction
 
 let &cpo = s:save_cpo

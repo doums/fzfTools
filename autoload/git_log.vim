@@ -29,7 +29,11 @@ function git_log#GitLog(...)
   if a:0 == 1
     let command = s:script." ".expand(a:1)
   endif
-  call oterm#spawn({ 'command': command, 'callback': funcref("s:OnExit"), 'name': 'gitlog' })
+  let options = { 'command': command, 'callback': funcref("s:OnExit"), 'name': 'gitlog' }
+  if exists('g:fzfTools') && has_key(g:fzfTools, 'gitlog')
+    let options.layout = g:fzfTools.gitlog
+  endif
+  call oterm#spawn(options)
 endfunction
 
 let &cpo = s:save_cpo

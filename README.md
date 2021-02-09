@@ -35,6 +35,22 @@ then run in vim
 
 If you use vim package `:h packages`.
 
+### config
+
+The config is optional.\
+You can provide an oterm layout for each tool:
+```
+" .vimrc/init.vim
+
+let g:fzfTools = {
+      \  'ls': { 'down': 40, 'min': 10 },
+      \  'buf': { 'down': 40, 'min': 10 },
+      \  'gitlog': { 'tab': 1 },
+      \  'gitlogsel': { 'tab': 1 },
+      \}
+```
+By default `g:oterm` layout is used.
+
 ### tools
 
 For Ls and Buf tools you can open the selected item(s) in several ways:\
