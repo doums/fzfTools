@@ -39,6 +39,10 @@ function fzfTools#GitLogSel()
   call git_log_sel#GitLogSel()
 endfunction
 
+function fzfTools#Reg()
+  call reg#Reg()
+endfunction
+
 function fzfTools#SetScripts()
   call ls#SetScript()
   call buf#SetScript()

@@ -31,5 +31,7 @@ command -range GitLogSel call fzfTools#GitLogSel()
 noremap <silent> <unique> <script> <Plug>GitLogSel <SID>GitLogSelMap
 noremap <SID>GitLogSelMap :GitLogSel<CR>
 
+command Reg call fzfTools#Reg()
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
