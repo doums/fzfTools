@@ -26,7 +26,7 @@ function! s:addreg(list, register)
   let value = getreg(a:register, 1, 1)
   if !empty(value)
     echom join(value, ' ')
-    call add(a:list, shellescape('"'.a:register.'  '.join(value, ' ')))
+    call add(a:list, escape('"'.a:register.'  '.join(value, ' '), "'\n"))
   endif
 endfunction
 
@@ -59,7 +59,7 @@ function reg#Reg(...)
   call s:addreg(registers, '_')
   " last search pattern register
   call s:addreg(registers, '/')
-  let command = 'echo -e '.join(registers, '\n').' | '.s:fzf_command
+  let command = "echo -e '".join(registers, '\n')."' | ".s:fzf_command
   echom command
   let options = { 'command': command, 'callback': funcref("s:OnExit"), 'name': 'reg' }
   if exists('g:fzfTools') && has_key(g:fzfTools, 'reg')
