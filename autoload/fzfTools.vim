@@ -23,8 +23,8 @@ function fzfTools#Ls(...)
   endif
 endfunction
 
-function fzfTools#Buf()
-  call buf#Buf()
+function fzfTools#buf()
+  call buf#buf()
 endfunction
 
 function fzfTools#GitLog(...)
@@ -45,7 +45,6 @@ endfunction
 
 function fzfTools#SetScripts()
   call ls#SetScript()
-  call buf#SetScript()
   call git_log#SetScript()
   call git_log_sel#SetScript()
 endfunction

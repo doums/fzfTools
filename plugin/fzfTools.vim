@@ -19,7 +19,7 @@ command -nargs=? -complete=dir Ls call fzfTools#Ls(<f-args>)
 noremap <silent> <unique> <script> <Plug>Ls <SID>LsMap
 noremap <SID>LsMap :Ls<CR>
 
-command Buf call fzfTools#Buf()
+command Buf call fzfTools#buf()
 noremap <silent> <unique> <script> <Plug>Buf <SID>BufMap
 noremap <SID>BufMap :Buf<CR>
 
