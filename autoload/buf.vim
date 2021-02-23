@@ -17,7 +17,7 @@ let s:buffers = []
 let s:tmpfile = ''
 let s:bufnr = ''
 
-let g:fzf_keys = {
+let s:actions = {
       \  'split': 'ctrl-s',
       \  'vsplit': 'ctrl-v',
       \  'tab': 'ctrl-t',
@@ -32,14 +32,14 @@ endfunction
 
 function! s:fzf_keys()
   let keys = ''
-  for key in values(g:fzf_keys)
+  for key in values(s:actions)
     let keys .= key.','
   endfor
   return keys
 endfunction
 
 function! s:get_mode(fzf_key)
-  for [key, value] in items(g:fzf_keys)
+  for [key, value] in items(s:actions)
     if a:fzf_key == value
       return key
     endif

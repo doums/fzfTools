@@ -2,13 +2,18 @@
 " License, v. 2.0. If a copy of the MPL was not distributed with this
 " file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-if exists("g:fzfInit")
+if exists('g:fzfTools_plugin')
   finish
 endif
-let g:fzfInit = 1
+let g:fzfTools_plugin = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
+
+if !executable('fzf')
+  call fzfTools#PrintErr('fzfTools requires fzf to be available on your system')
+  finish
+endif
 
 augroup fzfTools
   autocmd!
