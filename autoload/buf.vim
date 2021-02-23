@@ -158,7 +158,7 @@ function! s:serialize_bufs()
   return buffers
 endfunction
 
-function buf#buf()
+function! buf#buf()
   if !empty(s:bufnr)
     return
   endif
