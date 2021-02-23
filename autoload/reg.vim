@@ -10,7 +10,8 @@ let g:fzfReg = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:fzf_command = "fzf --preview='echo -e {2..}' --preview-window=right:70%:noborder:wrap --prompt='reg ' | awk '{print $1}'"
+let s:fzf_command = "fzf --preview='echo {2..}' --preview-window=right:70%:noborder:wrap --prompt='reg ' | awk '{print $1}'"
+
 let s:tempfile = ''
 
 function s:OnExit(job, exitStatus)
@@ -25,11 +26,10 @@ endfunction
 function! s:addreg(list, register)
   let value = getreg(a:register, 1)
   if !empty(value)
-    let value = substitute(value, '\n\|\r\|\e', '^J', 'g')
-    let value = substitute(value, '\\n', '\\\\n', 'g')
-    let value = escape(value, "'")
-    let value = escape(value, nr2char(10))
-    " let value = substitute(value, '\(\n\)\|\(\r\)\|\(\e\)\|', '^J', 'g')
+    let value = substitute(value, '\n\|\r\|\e\|\\n\|\\r', '^J', 'g')
+    " let value = substitute(value, '\\\@123<!''', '''\\''''', 'g')
+    let value = substitute(value, '''\(\\''''\)\@!', '''\\''''', 'g')
+    " let value = escape(value, "'")
     echom value
     call add(a:list, '"'.a:register.'  '.value)
   endif
@@ -64,7 +64,6 @@ function reg#Reg()
   call s:addreg(registers, '_')
   " last search pattern register
   call s:addreg(registers, '/')
-  return
   let command = "echo -e '".join(registers, '\n')."' | ".s:fzf_command
   echom command
   let options = { 'command': command, 'callback': funcref("s:OnExit"), 'name': 'reg' }
@@ -73,6 +72,7 @@ function reg#Reg()
   endif
   call oterm#spawn(options)
 endfunction
+
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
