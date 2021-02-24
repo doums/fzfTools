@@ -15,11 +15,11 @@ let s:jobRunning = 0
 let s:callback = 0
 let s:bufNr = -1
 
-function fzfTools#Ls(...)
+function fzfTools#ls(...)
   if a:0 == 1
-    call ls#Ls(a:1)
+    call ls#ls(a:1)
   else
-    call ls#Ls()
+    call ls#ls()
   endif
 endfunction
 
@@ -44,7 +44,6 @@ function fzfTools#Reg()
 endfunction
 
 function fzfTools#SetScripts()
-  call ls#SetScript()
   call git_log#SetScript()
   call git_log_sel#SetScript()
 endfunction

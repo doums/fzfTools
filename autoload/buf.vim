@@ -11,7 +11,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 let s:fzf_prompt = 'buf '
-let s:fzf_command = 'fzf --no-info'
+let s:fzf_command = 'fzf --no-info --prompt="'.s:fzf_prompt.'"'
 let s:changed_symbol = '+'
 let s:buffers = []
 let s:tmpfile = ''
@@ -166,7 +166,7 @@ function! buf#buf()
   let bufs_info = s:get_buf_info()
   let s:buffers = bufs_info.buffers
   let serialized = s:serialize_bufs()
-  let command = 'echo -e "'.serialized.'" | '.s:fzf_command.' --header="'.bufs_info.current_buf.'" --prompt="'.s:fzf_prompt.'" --expect="'.s:fzf_keys().'" > '.s:tmpfile
+  let command = 'echo -e "'.serialized.'" | '.s:fzf_command.' --header="'.bufs_info.current_buf.'" --expect="'.s:fzf_keys().'" > '.s:tmpfile
   let options = { 'command': command, 'callback': funcref('s:on_exit'), 'name': 'buf' }
   if exists('g:fzfTools') && has_key(g:fzfTools, 'buf')
     let options.layout = g:fzfTools.buf

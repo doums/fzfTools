@@ -11,7 +11,8 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 let s:fzf_prompt = 'ls '
-let s:fzf_command = 'fzf --no-info'
+let s:fzf_preview_command = executable('bat') ? 'COLORTERM=truecolor bat --line-range :50 --color=always' : 'cat'
+let s:fzf_command = 'fzf --multi --preview-window=right:70%:noborder --prompt="'.s:fzf_prompt.'" --preview="'.s:fzf_preview_command.' {}"'
 let s:tmpfile = ''
 let s:bufnr = ''
 
@@ -87,15 +88,15 @@ function! ls#ls(...)
   if !empty(s:bufnr)
     return
   endif
-  let command = s:script
+  let s:tmpfile = tempname()
   if a:0 == 1
     let directory = expand(a:1)
     if !isdirectory(directory)
       call fzfTools#PrintErr(a:1.' is not a directory')
       return
     endif
-    let command = s:script.' '.directory
   endif
+  let command = s:fzf_command.' --expect="'.s:fzf_keys().'" > '.s:tmpfile
   let options = { 'command': command, 'callback': funcref('s:on_exit'), 'name': 'ls' }
   if exists('g:fzfTools') && has_key(g:fzfTools, 'ls')
     let options.layout = g:fzfTools.ls

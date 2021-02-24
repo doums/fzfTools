@@ -20,7 +20,7 @@ augroup fzfTools
   autocmd VimEnter,DirChanged * call fzfTools#SetScripts()
 augroup END
 
-command -nargs=? -complete=dir Ls call fzfTools#Ls(<f-args>)
+command -nargs=? -complete=dir Ls call fzfTools#ls(<f-args>)
 noremap <silent> <unique> <script> <Plug>Ls <SID>LsMap
 noremap <SID>LsMap :Ls<CR>
 
