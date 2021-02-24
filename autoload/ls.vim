@@ -12,7 +12,7 @@ set cpo&vim
 
 let s:fzf_prompt = 'ls '
 let s:fzf_preview_command = executable('bat') ? 'COLORTERM=truecolor bat --line-range :50 --color=always' : 'cat'
-let s:fzf_command = 'fzf --multi --preview-window=right:70%:noborder --prompt="'.s:fzf_prompt.'" --preview="'.s:fzf_preview_command.' {}"'
+let s:fzf_command = 'fzf --multi --preview-window=right:70%:noborder --preview="'.s:fzf_preview_command.' {}"'
 let s:tmpfile = ''
 let s:bufnr = ''
 
@@ -89,15 +89,27 @@ function! ls#ls(...)
     return
   endif
   let s:tmpfile = tempname()
+  let options = { 'callback': funcref('s:on_exit'), 'name': 'ls' }
+  let cwd = getcwd()
   if a:0 == 1
     let directory = expand(a:1)
     if !isdirectory(directory)
-      call fzfTools#PrintErr(a:1.' is not a directory')
+      call fzfTools#PrintErr(a:1.' is not a valid directory')
       return
     endif
+    let cwd = directory
   endif
-  let command = s:fzf_command.' --expect="'.s:fzf_keys().'" > '.s:tmpfile
-  let options = { 'command': command, 'callback': funcref('s:on_exit'), 'name': 'ls' }
+  let options.cwd = cwd
+  let path_items = split(cwd, '/')
+  if len(path_items) > 0
+    let tail = path_items[-1]
+  else
+    let tail = cwd
+  endif
+  if cwd == $HOME
+    let tail = '~'
+  endif
+  let options.command = s:fzf_command.' --expect="'.s:fzf_keys().'" --prompt="'.tail.' " > '.s:tmpfile
   if exists('g:fzfTools') && has_key(g:fzfTools, 'ls')
     let options.layout = g:fzfTools.ls
   endif
