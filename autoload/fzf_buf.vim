@@ -55,7 +55,7 @@ function! s:on_exit(job, status)
     call s:reset()
     return
   elseif a:status == 2
-    call fzfTools#printerr('Error')
+    call fzf_utils#printerr('Error')
     call s:reset()
     return
   elseif a:status == 130
@@ -63,7 +63,7 @@ function! s:on_exit(job, status)
     return
   endif
   if a:status != 0
-    call fzfTools#printerr('Exit status unknown')
+    call fzf_utils#printerr('Exit status unknown')
     call s:reset()
     return
   endif
@@ -95,7 +95,7 @@ function! s:on_exit(job, status)
             try
               execute 'bdelete '.bufnr
             catch
-              call fzfTools#printerr('The buffer is modified and not saved')
+              call fzf_utils#printerr('The buffer is modified and not saved')
             endtry
           endif
         endif
@@ -160,7 +160,7 @@ function! s:serialize_bufs()
   return buffers
 endfunction
 
-function! buf#buf()
+function! fzf_buf#spawn()
   if !empty(s:bufnr)
     return
   endif

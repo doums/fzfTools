@@ -51,7 +51,7 @@ function! s:on_exit(job, status)
     call s:reset()
     return
   elseif a:status == 2
-    call fzfTools#printerr('Error')
+    call fzf_utils#printerr('Error')
     call s:reset()
     return
   elseif a:status == 130
@@ -59,7 +59,7 @@ function! s:on_exit(job, status)
     return
   endif
   if a:status != 0
-    call fzfTools#printerr('Exit status unknown')
+    call fzf_utils#printerr('Exit status unknown')
     call s:reset()
     return
   endif
@@ -84,7 +84,7 @@ function! s:on_exit(job, status)
   call s:reset()
 endfunction
 
-function! ls#ls(...)
+function! fzf_ls#spawn(...)
   if !empty(s:bufnr)
     return
   endif
@@ -94,7 +94,7 @@ function! ls#ls(...)
   if a:0 == 1
     let directory = expand(a:1)
     if !isdirectory(directory)
-      call fzfTools#printerr(a:1.' is not a valid directory')
+      call fzf_utils#printerr(a:1.' is not a valid directory')
       return
     endif
     let cwd = directory
