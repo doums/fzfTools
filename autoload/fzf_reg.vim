@@ -15,10 +15,7 @@ let s:fzf_command = "fzf --preview='echo {2..}' --preview-window=right:70%:nobor
 let s:tempfile = ''
 
 function! s:on_exit(job, exitStatus)
-  " let list = readfile(s:tempfile)
-  echom a:exitStatus
-  if a:exitStatus != 0
-    call fzf_utils#printerr('error')
+  if !fzf_utils#check_exit_status(a:status)
     return
   endif
 endfunction

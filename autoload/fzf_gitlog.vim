@@ -36,23 +36,7 @@ function! s:reset()
 endfunction
 
 function! s:on_exit(job, status)
-  if a:status == 1
-    echom 'No match'
-    call s:reset()
-    return
-  elseif a:status == 2
-    call fzf_utils#printerr('Error')
-    call s:reset()
-    return
-  elseif a:status == 130
-    call s:reset()
-    return
-  endif
-  if a:status != 0
-    call fzf_utils#printerr('Exit status unknown')
-    call s:reset()
-    return
-  endif
+  call fzf_utils#check_exit_status(a:status)
   call s:reset()
 endfunction
 

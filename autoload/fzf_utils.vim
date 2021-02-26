@@ -10,6 +10,23 @@ let g:fzf_utils_autoload = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
+function! fzf_utils#check_exit_status(status)
+  if a:status == 1
+    echom 'No match'
+    return 0
+  elseif a:status == 2
+    call fzf_utils#printerr('Error')
+    return 0
+  elseif a:status == 130
+    return 0
+  endif
+  if a:status != 0
+    call fzf_utils#printerr('Exit status unknown')
+    return 0
+  endif
+  return 1
+endfunction
+
 function! fzf_utils#printerr(msg)
   echohl ErrorMsg
   echom a:msg
