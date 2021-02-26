@@ -12,6 +12,8 @@ set cpo&vim
 
 if !executable('fzf')
   call fzf_utils#printerr('fzfTools requires fzf to be installed on your system')
+  let &cpo = s:save_cpo
+  unlet s:save_cpo
   finish
 endif
 
