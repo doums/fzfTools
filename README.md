@@ -57,7 +57,8 @@ For Ls and Buf tools you can open the selected item(s) in several ways:\
 `enter` in the current window\
 `ctrl-s` horizontal split\
 `ctrl-v` vertical split\
-`ctrl-t` in a new tab
+`ctrl-t` in a new tab\
+`ctrl-x` remove the buffer from the buffer list
 
 #### Ls
 List the files in the current directory or in the given directory and open the one(s) you need.

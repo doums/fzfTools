@@ -18,7 +18,7 @@ function s:OnExit(job, exitStatus)
   " let list = readfile(s:tempfile)
   echom a:exitStatus
   if a:exitStatus != 0
-    call fzfTools#PrintErr('error')
+    call fzfTools#printerr('error')
     return
   endif
 endfunction

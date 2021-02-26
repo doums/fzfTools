@@ -11,14 +11,9 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 if !executable('fzf')
-  call fzfTools#PrintErr('fzfTools requires fzf to be available on your system')
+  call fzfTools#printerr('fzfTools requires fzf to be installed on your system')
   finish
 endif
-
-augroup fzfTools
-  autocmd!
-  autocmd VimEnter,DirChanged * call fzfTools#SetScripts()
-augroup END
 
 command -nargs=? -complete=dir Ls call fzfTools#ls(<f-args>)
 noremap <silent> <unique> <script> <Plug>Ls <SID>LsMap
@@ -28,11 +23,11 @@ command Buf call fzfTools#buf()
 noremap <silent> <unique> <script> <Plug>Buf <SID>BufMap
 noremap <SID>BufMap :Buf<CR>
 
-command -nargs=? -complete=file GitLog call fzfTools#GitLog(<f-args>)
+command -nargs=? -complete=file GitLog call fzfTools#gitlog('file', <f-args>)
 noremap <silent> <unique> <script> <Plug>FGitLog <SID>GitLogMap
 noremap <SID>GitLogMap :GitLog<CR>
 
-command -range GitLogSel call fzfTools#GitLogSel()
+command -range GitLogSel call fzfTools#gitlog('selection')
 noremap <silent> <unique> <script> <Plug>GitLogSel <SID>GitLogSelMap
 noremap <SID>GitLogSelMap :GitLogSel<CR>
 

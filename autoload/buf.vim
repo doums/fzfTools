@@ -12,6 +12,7 @@ set cpo&vim
 
 let s:fzf_prompt = 'buf '
 let s:fzf_command = 'fzf --no-info --prompt="'.s:fzf_prompt.'"'
+let s:empty_buffer = '-'
 let s:changed_symbol = '+'
 let s:buffers = []
 let s:tmpfile = ''
@@ -54,7 +55,7 @@ function! s:on_exit(job, status)
     call s:reset()
     return
   elseif a:status == 2
-    call fzfTools#PrintErr('Error')
+    call fzfTools#printerr('Error')
     call s:reset()
     return
   elseif a:status == 130
@@ -62,7 +63,7 @@ function! s:on_exit(job, status)
     return
   endif
   if a:status != 0
-    call fzfTools#PrintErr('Exit status unknown')
+    call fzfTools#printerr('Exit status unknown')
     call s:reset()
     return
   endif
@@ -94,7 +95,7 @@ function! s:on_exit(job, status)
             try
               execute 'bdelete '.bufnr
             catch
-              call fzfTools#PrintErr('The buffer is modified and not saved')
+              call fzfTools#printerr('The buffer is modified and not saved')
             endtry
           endif
         endif
@@ -111,10 +112,11 @@ function! s:get_buf_info()
   for buffer in getbufinfo({'buflisted': 1})
     let name = buffer.name
     if empty(buffer.name)
-      let name = '-'
+      let name = s:empty_buffer
     else
       let name = bufname(buffer.bufnr)
     endif
+    let name = substitute(name, $HOME, '~', 'g')
     if bufnr() != buffer.bufnr
       call add(buffers, {
             \ 'number': buffer.bufnr,

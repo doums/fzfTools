@@ -10,12 +10,7 @@ let g:fzfTools_autoload = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:prevWinId = 0
-let s:jobRunning = 0
-let s:callback = 0
-let s:bufNr = -1
-
-function fzfTools#ls(...)
+function! fzfTools#ls(...)
   if a:0 == 1
     call ls#ls(a:1)
   else
@@ -23,32 +18,25 @@ function fzfTools#ls(...)
   endif
 endfunction
 
-function fzfTools#buf()
+function! fzfTools#buf()
   call buf#buf()
 endfunction
 
-function fzfTools#GitLog(...)
-  if a:0 == 1
-    call git_log#GitLog(a:1)
+function! fzfTools#gitlog(...)
+  if a:0 > 1 && a:1 == 'file'
+    call git_log#gitlog('file', a:2)
+  elseif a:0 > 0 && a:1 == 'selection'
+    call git_log#gitlog('selection')
   else
-    call git_log#GitLog()
+    call git_log#gitlog()
   endif
 endfunction
 
-function fzfTools#GitLogSel()
-  call git_log_sel#GitLogSel()
-endfunction
-
-function fzfTools#Reg()
+function! fzfTools#Reg()
   call reg#Reg()
 endfunction
 
-function fzfTools#SetScripts()
-  call git_log#SetScript()
-  call git_log_sel#SetScript()
-endfunction
-
-function fzfTools#PrintErr(msg)
+function! fzfTools#printerr(msg)
   echohl ErrorMsg
   echom a:msg
   echohl None

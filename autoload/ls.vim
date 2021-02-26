@@ -51,7 +51,7 @@ function! s:on_exit(job, status)
     call s:reset()
     return
   elseif a:status == 2
-    call fzfTools#PrintErr('Error')
+    call fzfTools#printerr('Error')
     call s:reset()
     return
   elseif a:status == 130
@@ -59,7 +59,7 @@ function! s:on_exit(job, status)
     return
   endif
   if a:status != 0
-    call fzfTools#PrintErr('Exit status unknown')
+    call fzfTools#printerr('Exit status unknown')
     call s:reset()
     return
   endif
@@ -94,20 +94,18 @@ function! ls#ls(...)
   if a:0 == 1
     let directory = expand(a:1)
     if !isdirectory(directory)
-      call fzfTools#PrintErr(a:1.' is not a valid directory')
+      call fzfTools#printerr(a:1.' is not a valid directory')
       return
     endif
     let cwd = directory
   endif
   let options.cwd = cwd
+  let cwd = substitute(cwd, $HOME, '~', 'g')
   let path_items = split(cwd, '/')
   if len(path_items) > 0
     let tail = path_items[-1]
   else
     let tail = cwd
-  endif
-  if cwd == $HOME
-    let tail = '~'
   endif
   let options.command = s:fzf_command.' --expect="'.s:fzf_keys().'" --prompt="'.tail.' " > '.s:tmpfile
   if exists('g:fzfTools') && has_key(g:fzfTools, 'ls')
