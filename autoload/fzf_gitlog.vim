@@ -41,7 +41,7 @@ function! s:on_exit(job, status)
     call s:reset()
     return
   elseif a:status == 2
-    call fzfTools#printerr('Error')
+    call fzf_utils#printerr('Error')
     call s:reset()
     return
   elseif a:status == 130
@@ -49,7 +49,7 @@ function! s:on_exit(job, status)
     return
   endif
   if a:status != 0
-    call fzfTools#printerr('Exit status unknown')
+    call fzf_utils#printerr('Exit status unknown')
     call s:reset()
     return
   endif
@@ -67,16 +67,16 @@ function! s:get_selection()
   return [start, end]
 endfunction
 
-function! git_log#gitlog(...)
+function! fzf_gitlog#spawn(...)
   if !executable('git')
-    call fzfTools#printerr('fzfTools requires git to be installed on your system')
+    call fzf_utils#printerr('fzfTools requires git to be installed on your system')
     return
   endif
   if !empty(s:bufnr)
     return
   endif
   let command = s:fzf_command
-  if a:0 == 2 && a:1 == 'file' && !empty(a:2)
+  if a:0 > 1 && a:1 == 'file' && !empty(a:2)
     let command = s:fzf_command_file(expand(a:2))
   endif
   if a:0 == 1 && a:1 == 'selection'

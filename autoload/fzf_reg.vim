@@ -2,10 +2,10 @@
 " License, v. 2.0. If a copy of the MPL was not distributed with this
 " file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-if exists("g:fzfReg")
+if exists("g:fzf_reg_autoload")
   finish
 endif
-let g:fzfReg = 1
+let g:fzf_reg_autoload = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -14,11 +14,11 @@ let s:fzf_command = "fzf --preview='echo {2..}' --preview-window=right:70%:nobor
 
 let s:tempfile = ''
 
-function s:OnExit(job, exitStatus)
+function! s:on_exit(job, exitStatus)
   " let list = readfile(s:tempfile)
   echom a:exitStatus
   if a:exitStatus != 0
-    call fzfTools#printerr('error')
+    call fzf_utils#printerr('error')
     return
   endif
 endfunction
@@ -35,7 +35,7 @@ function! s:addreg(list, register)
   endif
 endfunction
 
-function reg#Reg()
+function! fzf_reg#spawn()
   let registers = []
   " unnamed register
   call s:addreg(registers, '"')
@@ -66,7 +66,7 @@ function reg#Reg()
   call s:addreg(registers, '/')
   let command = "echo -e '".join(registers, '\n')."' | ".s:fzf_command
   echom command
-  let options = { 'command': command, 'callback': funcref("s:OnExit"), 'name': 'reg' }
+  let options = { 'command': command, 'callback': funcref("s:on_exit"), 'name': 'reg' }
   if exists('g:fzfTools') && has_key(g:fzfTools, 'reg')
     let options.layout = g:fzfTools.reg
   endif

@@ -11,27 +11,27 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 if !executable('fzf')
-  call fzfTools#printerr('fzfTools requires fzf to be installed on your system')
+  call fzf_utils#printerr('fzfTools requires fzf to be installed on your system')
   finish
 endif
 
-command -nargs=? -complete=dir Ls call fzfTools#ls(<f-args>)
+command -nargs=? -complete=dir Ls call fzf_ls#spawn(<f-args>)
 noremap <silent> <unique> <script> <Plug>Ls <SID>LsMap
 noremap <SID>LsMap :Ls<CR>
 
-command Buf call fzfTools#buf()
+command Buf call fzf_buf#spawn()
 noremap <silent> <unique> <script> <Plug>Buf <SID>BufMap
 noremap <SID>BufMap :Buf<CR>
 
-command -nargs=? -complete=file GitLog call fzfTools#gitlog('file', <f-args>)
+command -nargs=? -complete=file GitLog call fzf_gitlog#spawn('file', <f-args>)
 noremap <silent> <unique> <script> <Plug>FGitLog <SID>GitLogMap
 noremap <SID>GitLogMap :GitLog<CR>
 
-command -range GitLogSel call fzfTools#gitlog('selection')
+command -range GitLogSel call fzf_gitlog#spawn('selection')
 noremap <silent> <unique> <script> <Plug>GitLogSel <SID>GitLogSelMap
 noremap <SID>GitLogSelMap :GitLogSel<CR>
 
-command Reg call fzfTools#Reg()
+command Reg call fzf_reg#spawn()
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
