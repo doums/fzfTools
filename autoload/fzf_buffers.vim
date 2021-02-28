@@ -10,8 +10,7 @@ let g:fzf_buffers_autoload = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:fzf_prompt = 'buffer '
-let s:fzf_command = 'fzf --no-info --prompt="'.s:fzf_prompt.'"'
+let s:fzf_command = 'fzf --no-info'
 let s:empty_buffer = '-'
 let s:changed_symbol = '+'
 let s:buffers = []

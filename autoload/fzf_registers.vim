@@ -2,16 +2,16 @@
 " License, v. 2.0. If a copy of the MPL was not distributed with this
 " file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-if exists('g:fzf_reg_autoload')
+if exists('g:fzf_registers_autoload')
   finish
 endif
-let g:fzf_reg_autoload = 1
+let g:fzf_registers_autoload = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:fzf_prompt = 'reg '
-let s:fzf_command = "fzf --preview='echo {2..}' --preview-window=right:70%:noborder:wrap --prompt='".s:fzf_prompt."' | awk '{print $1}'"
+let s:fzf_header = 'registers'
+let s:fzf_command = "fzf --preview='echo {2..}' --preview-window=right:70%:noborder:wrap --header='".s:fzf_header."' | awk '{print $1}'"
 
 let s:tmpfile = ''
 let s:bufnr = ''
@@ -88,7 +88,7 @@ function! fzf_registers#spawn()
   " last search pattern register
   call s:addreg(registers, '/')
   let command = 'echo -e "'.join(registers, '\n').'" | '.s:fzf_command.' > '.s:tmpfile
-  let options = { 'command': command, 'callback': funcref("s:on_exit"), 'name': 'reg' }
+  let options = { 'command': command, 'callback': funcref("s:on_exit"), 'name': 'registers' }
   if exists('g:fzfTools') && has_key(g:fzfTools, 'registers')
     let options.layout = g:fzfTools.registers
   endif

@@ -88,7 +88,8 @@ nmap <C-b> <Plug>Buffers
 ```
 
 #### Registers
-List the registers and pick the one that will become the current register (`""` and `"+`).\
+List the registers and pick the one that will become the current register.\
+The unnamed `""` and selection `"+` registers will take the value of the selected one.\
 Its content will be used for the next put commands.
 
 usage:
