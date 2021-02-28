@@ -21,9 +21,9 @@ command -nargs=? -complete=dir Ls call fzf_ls#spawn(<f-args>)
 noremap <silent> <unique> <script> <Plug>Ls <SID>LsMap
 noremap <SID>LsMap :Ls<CR>
 
-command Buf call fzf_buf#spawn()
-noremap <silent> <unique> <script> <Plug>Buf <SID>BufMap
-noremap <SID>BufMap :Buf<CR>
+command Buffers call fzf_buffers#spawn()
+noremap <silent> <unique> <script> <Plug>Buffers <SID>BuffersMap
+noremap <SID>BuffersMap :Buffers<CR>
 
 command -nargs=? -complete=file GitLog call fzf_gitlog#spawn('file', <f-args>)
 noremap <silent> <unique> <script> <Plug>FGitLog <SID>GitLogMap
@@ -33,7 +33,9 @@ command -range GitLogSel call fzf_gitlog#spawn('selection')
 noremap <silent> <unique> <script> <Plug>GitLogSel <SID>GitLogSelMap
 noremap <SID>GitLogSelMap :GitLogSel<CR>
 
-command Reg call fzf_reg#spawn()
+command Registers call fzf_registers#spawn()
+noremap <silent> <unique> <script> <Plug>Registers <SID>RegistersMap
+noremap <SID>RegistersMap :Registers<CR>
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

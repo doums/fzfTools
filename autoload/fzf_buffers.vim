@@ -2,15 +2,15 @@
 " License, v. 2.0. If a copy of the MPL was not distributed with this
 " file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-if exists('g:fzf_buf_autoload')
+if exists('g:fzf_buffers_autoload')
   finish
 endif
-let g:fzf_buf_autoload = 1
+let g:fzf_buffers_autoload = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:fzf_prompt = 'buf '
+let s:fzf_prompt = 'buffer '
 let s:fzf_command = 'fzf --no-info --prompt="'.s:fzf_prompt.'"'
 let s:empty_buffer = '-'
 let s:changed_symbol = '+'
@@ -147,7 +147,7 @@ function! s:serialize_bufs()
   return buffers
 endfunction
 
-function! fzf_buf#spawn()
+function! fzf_buffers#spawn()
   if !empty(s:bufnr)
     return
   endif
@@ -156,8 +156,8 @@ function! fzf_buf#spawn()
   let s:buffers = bufs_info.buffers
   let serialized = s:serialize_bufs()
   let command = 'echo -e "'.serialized.'" | '.s:fzf_command.' --header="'.bufs_info.current_buf.'" --expect="'.s:fzf_keys().'" > '.s:tmpfile
-  let options = { 'command': command, 'callback': funcref('s:on_exit'), 'name': 'buf' }
-  if exists('g:fzfTools') && has_key(g:fzfTools, 'buf')
+  let options = { 'command': command, 'callback': funcref('s:on_exit'), 'name': 'buffers' }
+  if exists('g:fzfTools') && has_key(g:fzfTools, 'buffers')
     let options.layout = g:fzfTools.buf
   endif
   let s:bufnr = oterm#spawn(options)

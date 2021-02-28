@@ -54,7 +54,7 @@ function! s:addreg(list, register)
   endif
 endfunction
 
-function! fzf_reg#spawn()
+function! fzf_registers#spawn()
   if !empty(s:bufnr)
     return
   endif
