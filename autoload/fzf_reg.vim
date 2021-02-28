@@ -2,7 +2,7 @@
 " License, v. 2.0. If a copy of the MPL was not distributed with this
 " file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-if exists("g:fzf_reg_autoload")
+if exists('g:fzf_reg_autoload')
   finish
 endif
 let g:fzf_reg_autoload = 1
@@ -10,29 +10,55 @@ let g:fzf_reg_autoload = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:fzf_command = "fzf --preview='echo {2..}' --preview-window=right:70%:noborder:wrap --prompt='reg ' | awk '{print $1}'"
+let s:fzf_prompt = 'reg '
+let s:fzf_command = "fzf --preview='echo {2..}' --preview-window=right:70%:noborder:wrap --prompt='".s:fzf_prompt."' | awk '{print $1}'"
 
-let s:tempfile = ''
+let s:tmpfile = ''
+let s:bufnr = ''
 
-function! s:on_exit(job, exitStatus)
+function! s:reset()
+  let s:tmpfile = ''
+  let s:bufnr = ''
+endfunction
+
+function! s:on_exit(job, status) abort
   if !fzf_utils#check_exit_status(a:status)
+    call s:reset()
     return
   endif
+  let lines = readfile(s:tmpfile)
+  if empty(lines)
+    call s:reset()
+    return
+  endif
+  let regname = lines[0][1]
+  call setreg('"', getreg(regname, 1))
+  call setreg('+', getreg(regname, 1))
+  call s:reset()
 endfunction
 
 function! s:addreg(list, register)
   let value = getreg(a:register, 1)
   if !empty(value)
-    let value = substitute(value, '\n\|\r\|\e\|\\n\|\\r', '^J', 'g')
-    " let value = substitute(value, '\\\@123<!''', '''\\''''', 'g')
-    let value = substitute(value, '''\(\\''''\)\@!', '''\\''''', 'g')
-    " let value = escape(value, "'")
-    echom value
-    call add(a:list, '"'.a:register.'  '.value)
+    let value = substitute(strtrans(value), '\n\|\r\|\e\|\\n\|\\r\|\\e', '^J', 'g')
+    let [str_match, start, end] = matchstrpos(value, '\\\+"')
+    if start != -1
+      if (strlen(str_match) - 1) % 2 == 0
+        let splitted = split(value, '\zs')
+        call insert(splitted, '\', start)
+        let value = join(splitted, '')
+      endif
+    endif
+    let value = substitute(value, '\(\\\)\@123<!"', '\\"', 'g')
+    call add(a:list, '\"'.escape(a:register, '"').'  '.value)
   endif
 endfunction
 
 function! fzf_reg#spawn()
+  if !empty(s:bufnr)
+    return
+  endif
+  let s:tmpfile = tempname()
   let registers = []
   " unnamed register
   call s:addreg(registers, '"')
@@ -61,15 +87,13 @@ function! fzf_reg#spawn()
   call s:addreg(registers, '_')
   " last search pattern register
   call s:addreg(registers, '/')
-  let command = "echo -e '".join(registers, '\n')."' | ".s:fzf_command
-  echom command
+  let command = 'echo -e "'.join(registers, '\n').'" | '.s:fzf_command.' > '.s:tmpfile
   let options = { 'command': command, 'callback': funcref("s:on_exit"), 'name': 'reg' }
   if exists('g:fzfTools') && has_key(g:fzfTools, 'reg')
     let options.layout = g:fzfTools.reg
   endif
-  call oterm#spawn(options)
+  let s:bufnr = oterm#spawn(options)
 endfunction
-
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
