@@ -89,8 +89,8 @@ function! fzf_registers#spawn()
   call s:addreg(registers, '/')
   let command = 'echo -e "'.join(registers, '\n').'" | '.s:fzf_command.' > '.s:tmpfile
   let options = { 'command': command, 'callback': funcref("s:on_exit"), 'name': 'reg' }
-  if exists('g:fzfTools') && has_key(g:fzfTools, 'reg')
-    let options.layout = g:fzfTools.reg
+  if exists('g:fzfTools') && has_key(g:fzfTools, 'registers')
+    let options.layout = g:fzfTools.registers
   endif
   let s:bufnr = oterm#spawn(options)
 endfunction

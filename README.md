@@ -44,7 +44,8 @@ You can provide an oterm layout for each tool:
 
 let g:fzfTools = {
       \  'ls': { 'down': 40, 'min': 10 },
-      \  'buf': { 'down': 40, 'min': 10 },
+      \  'buffers': { 'down': 40, 'min': 10 },
+      \  'registers': { 'down': 40, 'min': 10 },
       \  'gitlog': { 'tab': 1 },
       \  'gitlogsel': { 'tab': 1 },
       \}
@@ -53,7 +54,7 @@ By default `g:oterm` layout is used.
 
 ### tools
 
-For Ls and Buf tools you can open the selected item(s) in several ways:\
+For Ls and Buffers tools you can open the selected item(s) in several ways:\
 `enter` in the current window\
 `ctrl-s` horizontal split\
 `ctrl-v` vertical split\
@@ -73,17 +74,31 @@ usage:
 nmap <C-s> <Plug>Ls
 ```
 
-#### Buf
+#### Buffers
 List the loaded and listed buffers and goto/open the one you need.
 
 usage:
-- **`Buf` command**
+- **`Buffers` command**
 ```
-:Buf
+:Buffers
 ```
-- **`<Plug>Buf` mapping**
+- **`<Plug>Buffers` mapping**
 ```
-nmap <C-b> <Plug>Buf
+nmap <C-b> <Plug>Buffers
+```
+
+#### Registers
+List the registers and pick the one that will become the current register (`""` and `"+`).\
+Its content will be used for the next put commands.
+
+usage:
+- **`Registers` command**
+```
+:Registers
+```
+- **`<Plug>Registers` mapping**
+```
+nmap <C-r> <Plug>Registers
 ```
 
 #### GitLog
