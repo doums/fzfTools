@@ -99,7 +99,7 @@ usage:
 ```
 - **`<Plug>Registers` mapping**
 ```
-nmap <C-r> <Plug>Registers
+nmap <A-p> <Plug>Registers
 ```
 
 #### GitLog
