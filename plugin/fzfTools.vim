@@ -26,11 +26,11 @@ noremap <silent> <unique> <script> <Plug>Buffers <SID>BuffersMap
 noremap <SID>BuffersMap :Buffers<CR>
 
 command -nargs=? -complete=file GitLog call fzf_gitlog#spawn('file', <f-args>)
-noremap <silent> <unique> <script> <Plug>FGitLog <SID>GitLogMap
+noremap <silent> <unique> <script> <Plug>GitLog <SID>GitLogMap
 noremap <SID>GitLogMap :GitLog<CR>
 
 command -range GitLogSel call fzf_gitlog#spawn('selection')
-noremap <silent> <unique> <script> <Plug>GitLogSel <SID>GitLogSelMap
+noremap <silent> <unique> <script> <Plug>SGitLog <SID>GitLogSelMap
 noremap <SID>GitLogSelMap :GitLogSel<CR>
 
 command Registers call fzf_registers#spawn()

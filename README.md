@@ -110,7 +110,7 @@ usage:
 ```
 :GitLog [file]
 ```
-- **`<Plug>FGitLog` mapping**
+- **`<Plug>GitLog` mapping**
 ```
 nmap <C-g> <Plug>GitLog
 ```
@@ -123,9 +123,9 @@ usage:
 ```
 :GitLogSel
 ```
-- **`<Plug>GitLogSel` mapping**
+- **`<Plug>SGitLog` mapping**
 ```
-vmap <C-g> <Plug>GitLogSel
+vmap <C-g> <Plug>SGitLog
 ```
 
 ### credits
