@@ -157,7 +157,7 @@ function! fzf_buffers#spawn()
   let command = 'echo -e "'.serialized.'" | '.s:fzf_command.' --header="'.bufs_info.current_buf.'" --expect="'.s:fzf_keys().'" > '.s:tmpfile
   let options = { 'command': command, 'callback': funcref('s:on_exit'), 'name': 'buffers' }
   if exists('g:fzfTools') && has_key(g:fzfTools, 'buffers')
-    let options.layout = g:fzfTools.buf
+    let options.layout = g:fzfTools.buffers
   endif
   let s:bufnr = oterm#spawn(options)
 endfunction
